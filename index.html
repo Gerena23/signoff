@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1B2127">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sign-Off">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Tire Spot Sign-Off</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#EEF0EE; --surface:#FFFFFF; --ink:#1B2127; --muted:#5B6570; --line:#CFD5D9;
+  --accent:#E3A400; --accent-ink:#1B2127; --accent-soft:#FFF4D2;
+  --ok:#1F7A4D; --ok-soft:#E3F3EA; --bad:#B3261E; --bad-soft:#FBE6E4;
+  --pad-bg:#FFFFFF; --pad-line:#9AA4AD;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#15191D; --surface:#1F252B; --ink:#E9ECEE; --muted:#9DA7B0; --line:#343C44;
+    --accent:#F0B429; --accent-ink:#15191D; --accent-soft:#3A3016;
+    --ok:#5CC08A; --ok-soft:#1B3326; --bad:#F2867E; --bad-soft:#3B1E1C;
+    --pad-bg:#FFFFFF; --pad-line:#9AA4AD;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#15191D; --surface:#1F252B; --ink:#E9ECEE; --muted:#9DA7B0; --line:#343C44;
+  --accent:#F0B429; --accent-ink:#15191D; --accent-soft:#3A3016;
+  --ok:#5CC08A; --ok-soft:#1B3326; --bad:#F2867E; --bad-soft:#3B1E1C;
+  --pad-bg:#FFFFFF; --pad-line:#9AA4AD;
+}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;padding-top:env(safe-area-inset-top,0px)}
+img{max-width:100%}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;padding-inline:16px;padding-block:0 40px}
+.wrap{max-width:920px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0;line-height:1.1}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;border-bottom:3px solid var(--ink);margin-bottom:22px;flex-wrap:wrap}
+.brand h1{font-size:34px;text-transform:uppercase}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.topbar nav{display:flex;gap:8px;flex-wrap:wrap}
+button,.btn{font:inherit;font-weight:600;border-radius:8px;border:2px solid var(--ink);background:transparent;color:var(--ink);min-height:48px;padding:0 18px;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-quiet{border-color:var(--line);color:var(--muted)}
+.btn-danger{border-color:var(--bad);color:var(--bad)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px;display:grid;gap:16px}
+.stack{display:grid;gap:18px}
+.step-h{display:flex;align-items:baseline;gap:10px}
+.step-h .n{font-family:var(--display);font-size:15px;font-weight:700;background:var(--ink);color:var(--surface);border-radius:4px;padding:1px 8px}
+.step-h h2{font-size:26px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+label.f{display:grid;gap:5px;font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+label.f .req{color:var(--bad)}
+input[type=text],input[type=tel],input[type=email],input[type=number],input[type=password],input[type=search],select,textarea{font:inherit;font-size:18px;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:8px;min-height:52px;padding:10px 12px;width:100%;text-transform:none;letter-spacing:0;font-weight:400}
+textarea{min-height:96px;resize:vertical}
+.money{position:relative}
+.money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted)}
+.money input{padding-left:28px;font-variant-numeric:tabular-nums;font-weight:700}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg label{flex:1 1 110px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:flex;align-items:center;justify-content:center;min-height:52px;border:2px solid var(--line);border-radius:8px;font-weight:600;cursor:pointer;background:var(--bg)}
+.seg input:checked+span{border-color:var(--ink);background:var(--accent-soft)}
+.seg input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.terms{display:grid;gap:10px}
+.term{display:grid;grid-template-columns:1fr 112px;gap:14px;align-items:start;padding:16px;border:2px solid var(--line);border-radius:8px;background:var(--bg)}
+.term b{display:block;font-size:19px;margin-bottom:4px}
+.term p{margin:0 0 6px}
+.term ul{margin:4px 0 8px;padding-left:22px;display:grid;gap:2px}
+.term .ini{display:grid;gap:4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;position:sticky;top:12px}
+.term .ini input{text-align:center;font-size:22px;font-weight:700;text-transform:uppercase;padding:8px 4px;min-height:56px;background:var(--surface)}
+.term.initialed{border-color:var(--ok);background:var(--ok-soft)}
+.term.initialed .ini input{border-color:var(--ok)}
+.staff-banner{background:var(--ink);color:var(--surface);border-radius:8px;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.staff-banner b{background:var(--accent);color:var(--accent-ink);border-radius:4px;padding:1px 8px;font-family:var(--display);text-transform:uppercase;letter-spacing:.04em}
+.svc label{flex:1 1 200px}
+.svc span{flex-direction:column;gap:2px;padding:10px 12px;min-height:72px;text-align:center}
+.svc small{font-weight:400;font-size:13px;color:var(--muted)}
+.autobox{display:grid;gap:8px;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:12px 14px}
+.auto-row{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center}
+.auto-k{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.svc-chips{display:flex;flex-wrap:wrap;gap:6px}
+.svc-chips b{background:var(--accent-soft);border:1px solid var(--accent);border-radius:99px;padding:2px 12px;font-weight:600}
+.bill{display:grid;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-variant-numeric:tabular-nums}
+.bill .ln{display:flex;justify-content:space-between;gap:12px}
+.bill .ln span:first-child{color:var(--muted)}
+.bill .grand{border-top:2px solid var(--ink);padding-top:8px;margin-top:4px;font-size:22px;font-weight:700}
+.bill .grand span:first-child{color:var(--ink);font-family:var(--display);text-transform:uppercase;letter-spacing:.03em}
+.term.autofilled .ini input{box-shadow:0 0 0 4px var(--ok-soft)}
+.backup-bar{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.backup-bar.stale{border-color:var(--accent);background:var(--accent-soft)}
+.waiver-h{text-align:center;display:grid;gap:4px;padding-block:4px 8px}
+.waiver-h h2{font-size:30px;text-transform:uppercase}
+.waiver-h p{margin:0;color:var(--muted)}
+@media (max-width:560px){.term{grid-template-columns:1fr}.term .ini{position:static;max-width:140px}}
+.fine{font-size:15px;color:var(--muted);margin:0}
+.padbox{position:relative;border:2px solid var(--pad-line);border-radius:8px;background:var(--pad-bg);height:220px;touch-action:none}
+.padbox canvas{width:100%;height:100%;display:block;touch-action:none;border-radius:6px}
+.padbox .x{position:absolute;left:18px;right:18px;bottom:48px;border-bottom:2px solid #C5CCD2;pointer-events:none}
+.padbox .x::before{content:"✕";position:absolute;left:0;bottom:4px;color:#8A949D;font-size:18px}
+.padbox .hint{position:absolute;right:14px;bottom:14px;font-size:13px;color:#8A949D;pointer-events:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.photo-prev{max-height:180px;border-radius:8px;border:1px solid var(--line)}
+.errors{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:12px 16px;font-weight:600}
+.errors ul{margin:6px 0 0;padding-left:20px;font-weight:400}
+.submit-bar{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap}
+.submit-bar .btn-primary{min-height:60px;font-size:20px;padding:0 28px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.done{text-align:center;justify-items:center}
+.done .check{width:84px;height:84px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-size:48px;font-weight:700}
+.done h2{font-size:36px;text-transform:uppercase}
+.email-row{display:flex;gap:10px;flex-wrap:wrap;width:100%;max-width:560px}
+.email-row input{flex:1 1 240px}
+.copybox{width:100%;max-width:560px;text-align:left}
+.copybox textarea{font-size:14px;min-height:140px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:12px 20px;border-radius:8px;font-weight:600;z-index:50;max-width:calc(100% - 32px)}
+.modal-bg{position:fixed;inset:0;background:rgba(10,14,18,.6);display:grid;place-items:center;padding:16px;z-index:40}
+.modal{background:var(--surface);border-radius:12px;padding:24px;width:100%;max-width:380px;display:grid;gap:14px}
+.modal h3{font-size:26px;text-transform:uppercase}
+.pinpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pinpad button{min-height:60px;font-size:24px}
+.pindots{display:flex;justify-content:center;gap:12px;min-height:22px}
+.pindots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink)}
+.pindots i.on{background:var(--ink)}
+.rec-list{display:grid;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.rec{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;text-align:left;background:transparent;border-radius:0;border-left:0;border-right:0;border-top:0;min-height:0;font-weight:400}
+.rec:last-child{border-bottom:0}
+.rec:hover{background:var(--bg)}
+.rec .nm{font-weight:700;font-size:18px}
+.rec .amt{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.rec .meta{color:var(--muted);font-size:14px}
+.pill{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:99px;background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--accent-soft);color:var(--ink)}
+.kv{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:8px 16px}
+.kv dt{color:var(--muted);font-size:14px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;padding-top:2px}
+.kv dd{margin:0;overflow-wrap:anywhere}
+.sigimg{background:#fff;border:1px solid var(--line);border-radius:8px;max-width:420px;width:100%}
+.agree-snap{white-space:pre-wrap;font-size:15px;background:var(--bg);border-radius:8px;padding:14px;margin:0}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+@media (max-width:560px){.kv{grid-template-columns:1fr}.brand h1{font-size:28px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <h1 id="bizName">The Tire Spot of Central Florida LLC</h1>
+      <p id="bizLine">8215 US Hwy 98 N, Lakeland, FL 33809 · (863) 409-7556</p>
+    </div>
+    <nav>
+      <button type="button" class="btn-quiet" id="navNew" hidden>New agreement</button>
+      <button type="button" class="btn-quiet" id="navRecords">Records</button>
+      <button type="button" class="btn-quiet" id="navSettings">Settings</button>
+      <button type="button" class="btn-primary" id="installBtn" hidden>Install app</button>
+    </nav>
+  </header>
+
+  <!-- ============ FORM ============ -->
+  <main id="screenForm">
+    <form id="form" novalidate>
+     <!-- STAFF PART -->
+     <div id="staffPart" class="stack">
+      <div class="staff-banner"><b>Staff</b> Set up the job, then hand the tablet to the customer.</div>
+      <section class="section">
+        <div class="step-h"><span class="n">1</span><h2>Services provided</h2></div>
+        <p class="fine">Pick everything done today. The customer only sees and initials the waiver sections for these services.</p>
+        <div class="seg svc" id="svcBox"></div>
+      </section>
+
+      <section class="section">
+        <div class="step-h"><span class="n">2</span><h2>Work &amp; payment</h2></div>
+        <div class="autobox">
+          <div class="auto-row"><span class="auto-k">Invoice #</span><span class="mono" id="invoiceAuto"></span></div>
+          <div class="auto-row"><span class="auto-k">Date</span><span id="todayDate"></span></div>
+          <div class="auto-row"><span class="auto-k">Services</span><span id="svcAuto" class="svc-chips"><em class="fine">Pick services above</em></span></div>
+        </div>
+        <label class="f">Notes (optional)<textarea id="service" placeholder="Tire size, quantity, anything else. Example: 2 tires 225/45R17"></textarea></label>
+        <div class="grid">
+          <label class="f"><span>Tires total <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="tiresTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label>
+          <label class="f"><span>Service total <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="serviceTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label>
+        </div>
+        <input type="hidden" id="amount">
+        <div class="bill" id="bill" aria-live="polite"></div>
+        <label class="f"><span>Card last 4 digits <span class="req">*</span></span><input type="text" id="last4" inputmode="numeric" maxlength="4"></label>
+        <div style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Payment method <span style="color:var(--bad)">*</span></div>
+        <div class="seg" role="radiogroup" aria-label="Payment method">
+          <label><input type="radio" name="method" value="Card - chip"><span>Card · chip</span></label>
+          <label><input type="radio" name="method" value="Card - tap"><span>Card · tap</span></label>
+          <label><input type="radio" name="method" value="Card - swiped"><span>Card · swipe</span></label>
+          <label><input type="radio" name="method" value="Card - keyed"><span>Card · typed in</span></label>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="step-h"><span class="n">3</span><h2>Photo</h2></div>
+        <p class="fine">Optional. Take a photo of the finished work. It's kept with the signed record.</p>
+        <div class="row">
+          <label class="btn" for="photo" style="display:inline-flex;align-items:center">Take or add photo</label>
+          <input type="file" id="photo" accept="image/*" capture="environment" hidden>
+          <button type="button" class="btn-quiet" id="removePhoto" hidden>Remove photo</button>
+        </div>
+        <img id="photoPrev" class="photo-prev" alt="Photo preview" hidden>
+      </section>
+
+      <div id="staffErrors" class="errors" hidden></div>
+      <div class="submit-bar">
+        <button type="button" class="btn-quiet" id="resetForm">Start over</button>
+        <button type="button" class="btn-primary" id="handoffBtn">Hand to customer →</button>
+      </div>
+     </div>
+
+     <!-- CUSTOMER PART -->
+     <div id="custPart" class="stack" hidden>
+      <div class="waiver-h">
+        <h2>Tire &amp; Vehicle Service · Liability &amp; Warranty Waiver</h2>
+        <p>For used tires, new tires, alignments &amp; general mechanical work</p>
+        <p class="fine">Customer information, initials and signature required.</p>
+      </div>
+
+      <section class="section">
+        <div class="step-h"><span class="n">1</span><h2>Your service today</h2></div>
+        <dl class="kv" id="jobSummary" style="margin:0"></dl>
+        <p class="fine">Something wrong here? Tell staff before you sign.</p>
+      </section>
+
+      <section class="section">
+        <div class="step-h"><span class="n">2</span><h2>Your information</h2></div>
+        <div class="grid">
+          <label class="f"><span>Full name <span class="req">*</span></span><input type="text" id="custName" autocomplete="off"></label>
+          <label class="f"><span>Phone <span class="req">*</span></span><input type="tel" id="custPhone" autocomplete="off" inputmode="tel"></label>
+          <label class="f">Email (for your copy)<input type="email" id="custEmail" autocomplete="off" inputmode="email"></label>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="step-h"><span class="n">3</span><h2>Read &amp; initial</h2></div>
+        <p class="fine" id="termsHint"></p>
+        <div class="terms" id="terms"></div>
+        <p class="fine" id="esignNote"></p>
+      </section>
+
+      <section class="section">
+        <div class="step-h"><span class="n">4</span><h2>Sign</h2></div>
+        <div class="padbox" id="padbox">
+          <canvas id="pad" aria-label="Signature pad. Sign with your finger."></canvas>
+          <div class="x"></div>
+          <div class="hint">Sign with your finger</div>
+        </div>
+        <div class="row" style="justify-content:space-between">
+          <label class="f" style="flex:1 1 260px"><span>Printed name <span class="req">*</span></span><input type="text" id="printName" autocomplete="off"></label>
+          <button type="button" class="btn-quiet" id="clearSig" style="align-self:end">Clear signature</button>
+        </div>
+      </section>
+
+      <div id="formErrors" class="errors" hidden></div>
+      <div class="submit-bar">
+        <button type="button" class="btn-quiet" id="backToStaff">Back to staff (PIN)</button>
+        <button type="submit" class="btn-primary" id="submitBtn">Sign &amp; submit</button>
+      </div>
+     </div>
+    </form>
+  </main>
+
+  <!-- ============ DONE ============ -->
+  <main id="screenDone" hidden>
+    <section class="section done">
+      <div class="check" aria-hidden="true">✓</div>
+      <h2>Signed. Thank you.</h2>
+      <p style="margin:0">Invoice <span class="mono" id="doneId"></span> is saved.</p>
+      <p class="fine" id="doneWhen"></p>
+      <div class="email-row">
+        <input type="email" id="doneEmail" placeholder="Email for your copy" aria-label="Email for your copy">
+        <button type="button" class="btn" id="emailBtn">Email me a copy</button>
+      </div>
+      <p class="fine" id="emailNote" hidden></p>
+      <details class="copybox">
+        <summary class="fine" style="cursor:pointer">Show the copy as text</summary>
+        <textarea id="copyText" readonly aria-label="Agreement copy"></textarea>
+        <button type="button" class="btn-quiet" id="copyBtn" style="margin-top:8px">Copy text</button>
+      </details>
+      <button type="button" class="btn-primary" id="nextCustomer" style="min-height:60px;font-size:20px">Done · next customer</button>
+    </section>
+  </main>
+
+  <!-- ============ RECORDS ============ -->
+  <main id="screenRecords" hidden>
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <h2 style="font-size:30px;text-transform:uppercase">Signed agreements</h2>
+        <span class="fine" id="recCount"></span>
+      </div>
+      <div class="backup-bar">
+        <div><b>Backups</b> <span class="fine" id="lastBackup"></span></div>
+        <div class="row">
+          <button type="button" class="btn-primary" id="backupBtn">Back up all records</button>
+          <button type="button" class="btn-quiet" id="csvBtn">Export spreadsheet</button>
+          <label class="btn btn-quiet" for="restoreFile" style="display:inline-flex;align-items:center">Restore backup</label>
+          <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+        </div>
+        <p class="fine" style="margin:0">Records are saved only on this tablet. Back up at least once a week and keep the file in Google Drive or email it to yourself.</p>
+      </div>
+      <input type="search" id="recSearch" placeholder="Search name, phone, invoice, last 4, services" aria-label="Search records">
+      <div class="rec-list" id="recList"><div class="empty">Loading…</div></div>
+    </div>
+  </main>
+
+  <main id="screenDetail" hidden>
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <button type="button" class="btn-quiet" id="backToList">← All records</button>
+        <div class="row">
+          <button type="button" class="btn-primary" id="saveCopy">Save dispute copy</button>
+          <button type="button" class="btn-danger" id="delRec">Delete</button>
+        </div>
+      </div>
+      <div id="delConfirm" class="errors" hidden>
+        Delete this signed agreement for good? You'd lose it as evidence.
+        <div class="row" style="margin-top:10px">
+          <button type="button" class="btn-danger" id="delYes">Yes, delete</button>
+          <button type="button" class="btn-quiet" id="delNo">Keep it</button>
+        </div>
+      </div>
+      <section class="section" id="detailBody"></section>
+    </div>
+  </main>
+
+  <!-- ============ SETTINGS ============ -->
+  <main id="screenSettings" hidden>
+    <form id="settingsForm" class="section" novalidate>
+      <h2 style="font-size:30px;text-transform:uppercase">Business settings</h2>
+      <div class="grid">
+        <label class="f">Business name<input type="text" id="setName"></label>
+        <label class="f">Phone<input type="tel" id="setPhone"></label>
+      </div>
+      <label class="f">Address<input type="text" id="setAddr"></label>
+      <div class="grid">
+        <label class="f">Sales tax % (tires)<input type="number" id="setTax" step="0.01" min="0" inputmode="decimal"></label>
+        <label class="f">Square fee %<input type="number" id="setFeePct" step="0.01" min="0" inputmode="decimal"></label>
+        <label class="f">Square fee per sale ($)<input type="number" id="setFeeFixed" step="0.01" min="0" inputmode="decimal"></label>
+      </div>
+      <label class="f">Staff PIN (4–8 digits)<input type="password" id="setPin" inputmode="numeric" maxlength="8" autocomplete="new-password"></label>
+      <p class="fine">The PIN keeps customers out of Records and Settings on the tablet. The default is 1234. Change it now.</p>
+      <div class="row" style="justify-content:flex-end">
+        <button type="button" class="btn-quiet" id="setCancel">Cancel</button>
+        <button type="submit" class="btn-primary">Save settings</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<div class="modal-bg" id="pinModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <h3 id="pinTitle">Staff PIN</h3>
+    <div class="pindots" id="pinDots"></div>
+    <p class="fine" id="pinErr" style="color:var(--bad);text-align:center;min-height:1.4em;margin:0"></p>
+    <div class="pinpad" id="pinPad"></div>
+    <button type="button" class="btn-quiet" id="pinCancel">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const DEFAULTS = { name: "The Tire Spot of Central Florida LLC", address: "8215 US Hwy 98 N, Lakeland, FL 33809", phone: "(863) 409-7556", pin: "1234", taxRate: 7, feePct: 2.6, feeFixed: 0.15 };
+let biz = { ...DEFAULTS };
+let db = null, assets = null, downloads = null, mcp = null;
+let records = [], unsub = null, currentRec = null, lastSaved = null;
+let photoBlob = null;
+const AGREEMENT_VERSION = "2026-10-18";
+
+/* ---------- agreement text ---------- */
+const SERVICES = [
+  { key:"used",  label:"Used tires", adds:"used" },
+  { key:"new",   label:"New tires", adds:"newtire" },
+  { key:"align", label:"Alignment", adds:"mech" },
+  { key:"mech",  label:"General mechanical work", adds:"mech" },
+];
+const ALWAYS = ["road","service","release","payment"];
+const svcKeys = () => [...document.querySelectorAll('input[name="svc"]:checked')].map(i => i.value);
+const svcLabels = keys => SERVICES.filter(x => keys.includes(x.key)).map(x => x.label);
+function terms(b, amount, method, keys){
+  keys = keys || svcKeys();
+  const amt = amount ? "$" + Number(amount).toFixed(2) : "the total shown above";
+  const list = [
+    { key:"used", title:"Used Tire Acknowledgment (No Warranty)",
+      intro:"I understand that used tires are sold as-is with NO warranty of any kind, including but not limited to:",
+      bullets:["Tread Life","Defects","Leaks or Punctures","Blowouts","Performance or Longevity"],
+      outro:"Used tires are intended only as a temporary solution. I accept full responsibility for any failure or damage after installation." },
+    { key:"newtire", title:"New Tire Warranty Disclaimer",
+      intro:"I understand that new tires only carry the manufacturer's defect warranty. This warranty does NOT cover:",
+      bullets:["Potholes","Road Hazards","Nails or Debris","Curb Impact","Improper Inflation","Misalignment or Suspension Issues","Reckless Driving Behavior"],
+      outro:"The shop does not provide additional warranties beyond the manufacturer's defect warranty." },
+    { key:"road", title:"Road Hazard & Damage Waiver",
+      intro:"I acknowledge that road hazards are not the responsibility of the shop, including:",
+      bullets:["Potholes","Construction Debris","Glass, Metal, or Sharp Objects","Curbs or Impacts","Any Incident Causing Tire Failure"],
+      outro:"I accept full responsibility for any damage caused by road conditions." },
+    { key:"mech", title:"Alignment & General Mechanical Work Disclaimer",
+      intro:"I understand and agree that any mechanical work performed by the shop, including alignments, balancing, suspension checks, tire installation, or any other service, is not a guarantee that existing vehicle issues will be corrected or prevented. I acknowledge that:",
+      bullets:["Alignments cannot fix worn or damaged suspension components","Pre-existing issues may affect alignment results","Steering pull, vibration, uneven wear, or handling problems may continue if caused by unrelated vehicle conditions",`${b.name} is not responsible for any future issues that arise after service`,`${b.name} is not liable for problems caused by parts, components, or conditions outside of the work performed.`],
+      outro:"I agree that I will not hold the shop responsible for any mechanical, steering, suspension, or tire-related issues that occur after service, unless directly caused by proven negligence." },
+    { key:"service", title:"Service Confirmation",
+      intro:"I confirm that:",
+      bullets:["I requested the services to be performed","I inspected the tires and/or vehicle before and after service","I received all services listed on my receipt","I am satisfied with the installation and work at the time of service"],
+      outro:"" },
+    { key:"release", title:"Release of Liability",
+      intro:"By signing below, I release the shop and its employees from any liability related to:",
+      bullets:["Tire Failure","Vehicle Damage","Accidents","Steering or Handling Issues","Suspension Problems","Alignment Results","Any Losses that Occurred After Service"],
+      outro:"I understand that vehicle condition, tire longevity, and performance depend on driving habits, road conditions, vehicle maintenance, and proper inflation, all of which are my responsibility." },
+    { key:"payment", title:"Payment Authorization & Final Sale",
+      intro:"I agree that:",
+      bullets:[`I authorize the charge of ${amt}${(keys && keys.length) ? " for " + svcLabels(keys).join(", ") : ""} as final payment in full${method ? " by " + method.toLowerCase().replace(" - ", " (") + (method.includes(" - ") ? ")" : "") : ""}. I made this purchase and the charge is valid.`,"All sales and services are final. No refunds are given once the service is complete.",`If I have a problem with the work, I will contact ${b.name} at ${b.phone} and give the shop a chance to address it before I contact my bank or card company.`],
+      outro:"" },
+  ];
+  const want = new Set(ALWAYS);
+  SERVICES.forEach(x => { if(keys.includes(x.key)) want.add(x.adds); });
+  const out = list.filter(t => want.has(t.key));
+  out.forEach((t,i) => { t.num = i + 1; t.text = [t.intro, ...t.bullets.map(x => "• " + x), t.outro].filter(Boolean).join("\n"); });
+  return out;
+}
+function esignText(b){ return `My electronic signature below has the same effect as a handwritten signature. ${b.name} keeps a copy of this signed record, including the date, time, and any photo taken.`; }
+
+let lastInitials = "";
+function renderTerms(){
+  const box = $("terms");
+  const vals = {};
+  box.querySelectorAll("input").forEach(i => vals[i.id] = i.value);
+  box.innerHTML = "";
+  terms(biz, $("amount").value, methodVal()).forEach(t => {
+    const card = document.createElement("div");
+    card.className = "term";
+    const id = "t_" + t.key;
+    card.innerHTML = `<div><b></b><p class="intro"></p><ul></ul><p class="outro"></p></div><label class="ini" for="${id}">Initials<input type="text" id="${id}" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>`;
+    card.querySelector("b").textContent = t.num + ". " + t.title;
+    card.querySelector(".intro").textContent = t.intro;
+    const ul = card.querySelector("ul");
+    t.bullets.forEach(x => { const li = document.createElement("li"); li.textContent = x; ul.appendChild(li); });
+    const o = card.querySelector(".outro"); if(t.outro) o.textContent = t.outro; else o.remove();
+    const inp = card.querySelector("input");
+    inp.value = vals[id] || "";
+    const mark = () => card.classList.toggle("initialed", inp.value.trim().length >= 2);
+    inp.addEventListener("input", () => { mark(); const v = inp.value.trim(); if(v.length >= 2) lastInitials = v.toUpperCase(); });
+    inp.addEventListener("pointerdown", e => {
+      if(inp.value.trim() || !lastInitials) return;
+      e.preventDefault();
+      inp.value = lastInitials; mark();
+      card.classList.add("autofilled"); setTimeout(() => card.classList.remove("autofilled"), 600);
+    });
+    mark();
+    box.appendChild(card);
+  });
+  $("esignNote").textContent = esignText(biz);
+  const n = box.children.length;
+  $("termsHint").textContent = `Read each section and write your initials in the box beside it. All ${n} are required.`;
+}
+const r2 = n => Math.round((n + Number.EPSILON) * 100) / 100;
+function calcBill(){
+  const tires = r2(parseFloat($("tiresTotal").value) || 0), service = r2(parseFloat($("serviceTotal").value) || 0);
+  const subtotal = r2(tires + service);
+  const tax = r2(tires * (Number(biz.taxRate) || 0) / 100);
+  const fee = subtotal > 0 ? r2((subtotal + tax) * (Number(biz.feePct) || 0) / 100 + (Number(biz.feeFixed) || 0)) : 0;
+  const total = r2(subtotal + tax + fee);
+  return { tires, service, subtotal, tax, fee, total, taxRate: Number(biz.taxRate) || 0, feePct: Number(biz.feePct) || 0, feeFixed: Number(biz.feeFixed) || 0 };
+}
+function billLines(b){
+  return [
+    ["Tires", b.tires], ["Service", b.service], ["Subtotal", b.subtotal],
+    [`Sales tax (${b.taxRate}% on tires)`, b.tax],
+    [`Square card fee (${b.feePct}% + $${b.feeFixed.toFixed(2)})`, b.fee],
+  ];
+}
+function drawBill(){
+  const b = calcBill();
+  $("amount").value = b.total > 0 ? b.total.toFixed(2) : "";
+  const box = $("bill"); box.innerHTML = "";
+  billLines(b).forEach(([k,v]) => { const d = document.createElement("div"); d.className = "ln"; d.innerHTML = "<span></span><span></span>"; d.children[0].textContent = k; d.children[1].textContent = "$" + v.toFixed(2); box.appendChild(d); });
+  const g = document.createElement("div"); g.className = "ln grand"; g.innerHTML = "<span>Final total</span><span></span>"; g.children[1].textContent = "$" + b.total.toFixed(2); box.appendChild(g);
+}
+const methodVal = () => (document.querySelector('input[name="method"]:checked')||{}).value || "";
+
+/* ---------- branding ---------- */
+function applyBiz(){
+  if($("bill")) drawBill();
+  $("bizName").textContent = biz.name;
+  $("bizLine").textContent = [biz.address, biz.phone].filter(Boolean).join(" · ");
+  renderTerms();
+}
+
+/* ---------- signature pad ---------- */
+const pad = $("pad"), ctx = pad.getContext("2d");
+let drawing = false, hasInk = false, last = null;
+function sizePad(){
+  const r = pad.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  const data = hasInk ? pad.toDataURL() : null;
+  pad.width = Math.round(r.width * dpr); pad.height = Math.round(r.height * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#111827"; ctx.lineWidth = 2.6;
+  if (data){ const img = new Image(); img.onload = () => ctx.drawImage(img,0,0,r.width,r.height); img.src = data; }
+}
+function pt(e){ const r = pad.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; }
+pad.addEventListener("pointerdown", e => { e.preventDefault(); pad.setPointerCapture(e.pointerId); drawing = true; last = pt(e); ctx.beginPath(); ctx.arc(last.x,last.y,1.2,0,Math.PI*2); ctx.fillStyle="#111827"; ctx.fill(); hasInk = true; });
+pad.addEventListener("pointermove", e => { if(!drawing) return; e.preventDefault(); const p = pt(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last = p; });
+["pointerup","pointercancel","pointerleave"].forEach(ev => pad.addEventListener(ev, () => drawing = false));
+$("clearSig").onclick = () => { ctx.clearRect(0,0,pad.width,pad.height); hasInk = false; };
+window.addEventListener("resize", sizePad);
+function sigDataUrl(){
+  // white background, downscaled so the record stays small
+  const w = 700, h = Math.round(700 * pad.height / pad.width);
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0,0,w,h); x.drawImage(pad,0,0,w,h);
+  return c.toDataURL("image/png");
+}
+
+/* ---------- photo ---------- */
+function downscale(file, max, q){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas"); c.width = Math.round(img.width*s); c.height = Math.round(img.height*s);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? res(b) : rej(new Error("photo")), "image/jpeg", q);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("photo")); };
+    img.src = url;
+  });
+}
+$("photo").addEventListener("change", async e => {
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  try{ photoBlob = await downscale(f, 1400, 0.78); $("photoPrev").src = URL.createObjectURL(photoBlob); $("photoPrev").hidden = false; $("removePhoto").hidden = false; }
+  catch{ toast("That photo couldn't be read. Try another."); }
+  e.target.value = "";
+});
+$("removePhoto").onclick = () => { photoBlob = null; $("photoPrev").hidden = true; $("removePhoto").hidden = true; };
+const blobToDataUrl = b => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); });
+
+/* ---------- services + hand-off ---------- */
+SERVICES.forEach(x => {
+  const l = document.createElement("label");
+  const names = { used:"Used Tire Acknowledgment", newtire:"New Tire Warranty Disclaimer", mech:"Alignment & Mechanical Disclaimer" };
+  l.innerHTML = `<input type="checkbox" name="svc" value="${x.key}"><span></span>`;
+  const sp = l.querySelector("span"); sp.append(x.label); const sm = document.createElement("small"); sm.textContent = "Adds: " + names[x.adds]; sp.appendChild(sm);
+  l.querySelector("input").addEventListener("change", () => { renderTerms(); drawSvcAuto(); });
+  $("svcBox").appendChild(l);
+});
+const money2 = n => "$" + Number(n||0).toFixed(2);
+function showErrors(boxId, title, errs){
+  const box = $(boxId);
+  if(!errs.length){ box.hidden = true; return false; }
+  box.innerHTML = title + "<ul></ul>";
+  errs.forEach(t => { const li = document.createElement("li"); li.textContent = t; box.querySelector("ul").appendChild(li); });
+  box.hidden = false; box.scrollIntoView({behavior:"smooth",block:"center"});
+  return true;
+}
+function staffErrors(){
+  const v = id => $(id).value.trim(), errs = [];
+  if(!svcKeys().length) errs.push("Pick at least one service.");
+  if(!(calcBill().subtotal > 0)) errs.push("Enter the tires total, the service total, or both.");
+  const m = methodVal();
+  if(!m) errs.push("Pick a payment method.");
+  if(!/^\d{4}$/.test(v("last4"))) errs.push("Enter the last 4 digits of the card.");
+  return errs;
+}
+function fillSummary(){
+  const v = id => $(id).value.trim(), m = methodVal();
+  const rows = [
+    ["Services", svcLabels(svcKeys()).join(", ")],
+    ["Invoice #", pendingId],
+    ...(v("service") ? [["Notes", v("service")]] : []),
+    ...billLines(calcBill()).map(([k,val]) => [k, money2(val)]),
+    ["Final total", money2(calcBill().total) + " · " + m + (v("last4") ? " ending " + v("last4") : "")],
+    ["Date", $("todayDate").textContent],
+  ];
+  const dl = $("jobSummary"); dl.innerHTML = "";
+  rows.forEach(([k,val]) => { const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = val; dl.append(dt, dd); });
+}
+function toCustomer(){
+  renderTerms(); fillSummary();
+  $("staffPart").hidden = true; $("custPart").hidden = false;
+  $("formErrors").hidden = true;
+  window.scrollTo(0,0); requestAnimationFrame(sizePad);
+}
+function toStaff(){
+  $("custPart").hidden = true; $("staffPart").hidden = false; window.scrollTo(0,0);
+}
+$("handoffBtn").onclick = () => {
+  if(showErrors("staffErrors", "Finish these before handing over:", staffErrors())) return;
+  toCustomer();
+};
+$("backToStaff").onclick = () => askPin(() => { unlocked = false; toStaff(); });
+
+/* ---------- submit ---------- */
+const resetPay = () => { renderTerms(); const c = $("t_payment"); if(c && c.value){ c.value = ""; c.closest(".term").classList.remove("initialed"); } };
+["tiresTotal","serviceTotal"].forEach(id => $(id).addEventListener("input", () => { drawBill(); resetPay(); }));
+document.querySelectorAll('input[name="method"]').forEach(r => r.addEventListener("change", resetPay));
+$("custName").addEventListener("input", () => { if(!$("printName").dataset.touched) $("printName").value = $("custName").value; });
+$("printName").addEventListener("input", () => $("printName").dataset.touched = "1");
+
+function newId(){
+  const d = new Date(), p = n => String(n).padStart(2,"0");
+  const r = Math.random().toString(36).slice(2,6).toUpperCase();
+  return `TS-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${r}`;
+}
+let pendingId = newId();
+function newJob(){ pendingId = newId(); $("invoiceAuto").textContent = pendingId; }
+function drawSvcAuto(){
+  const box = $("svcAuto"), labels = svcLabels(svcKeys());
+  box.innerHTML = "";
+  if(!labels.length){ box.innerHTML = '<em class="fine">Pick services above</em>'; return; }
+  labels.forEach(l => { const b = document.createElement("b"); b.textContent = l; box.appendChild(b); });
+}
+
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const v = id => $(id).value.trim();
+  if(staffErrors().length){ toast("Job details are incomplete. Hand the tablet back to staff."); return; }
+  const errs = [];
+  if(!v("custName")) errs.push("Enter your full name.");
+  if(!v("custPhone")) errs.push("Enter your phone number.");
+  const missing = [...$("terms").querySelectorAll("input")].filter(i => i.value.trim().length < 2);
+  if(missing.length) errs.push(`Initial every section in “Read & initial” (${missing.length} left).`);
+  if(!hasInk) errs.push("Sign in the signature box.");
+  if(!v("printName")) errs.push("Enter your printed name under the signature.");
+  if(showErrors("formErrors", "Please fix these before signing:", errs)) return;
+  const amt = parseFloat($("amount").value), m = methodVal();
+  if(!db){ toast("Storage isn't available on this device. Make sure the browser isn't in private mode."); return; }
+
+  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = "Saving…";
+  const t = terms(biz, amt, m);
+  const id = pendingId;
+  const now = new Date();
+  const rec = {
+    id, agreementVersion: AGREEMENT_VERSION,
+    signedAt: now.toISOString(), signedAtLocal: now.toLocaleString("en-US",{dateStyle:"full",timeStyle:"long"}),
+    business: { name: biz.name, address: biz.address, phone: biz.phone },
+    customer: { name: v("custName"), phone: v("custPhone"), email: v("custEmail") },
+    invoice: id,
+    service: v("service"), amount: calcBill().total, bill: calcBill(), method: m, last4: v("last4"),
+    services: svcLabels(svcKeys()),
+    terms: t.map(x => ({ title:x.num + ". " + x.title, text:x.text, initials: $("t_"+x.key).value.trim().toUpperCase(), accepted:true })), docTitle: "Tire & Vehicle Service - Liability & Warranty Waiver", esign: esignText(biz),
+    printedName: v("printName"), signature: sigDataUrl(),
+    photoId: null, photoData: null,
+    device: navigator.userAgent, emailedTo: null,
+    search: [v("custName"), v("custPhone"), v("last4"), id, svcLabels(svcKeys()).join(" ")].join(" ").toLowerCase()
+  };
+  try{
+    if(photoBlob){
+      let stored = false;
+      if(assets){
+        try{ const up = await assets.upload(photoBlob, { type:"image/jpeg" }); rec.photoId = up.id; stored = true; } catch(_){}
+      }
+      if(!stored){
+        const small = await downscale(photoBlob, 1280, 0.72);
+        const du = await blobToDataUrl(small);
+        if(du.length < 4000000) rec.photoData = du; else toast("Photo was too large to keep. The agreement was still saved.");
+      }
+    }
+    await db.collection("agreements").doc(id).set(rec);
+    lastSaved = rec;
+    showDone(rec);
+  }catch(err){
+    const msg = err && err.code === "quota_exceeded" ? "Storage is full. Delete old test records in Records, then try again." : "Couldn't save. Check the internet connection and tap Sign & submit again.";
+    toast(msg);
+  }finally{ btn.disabled = false; btn.textContent = "Sign & submit"; }
+});
+
+function resetForm(){
+  $("form").reset(); $("printName").dataset.touched = ""; lastInitials = ""; drawBill();
+  ctx.clearRect(0,0,pad.width,pad.height); hasInk = false;
+  photoBlob = null; $("photoPrev").hidden = true; $("removePhoto").hidden = true;
+  $("formErrors").hidden = true; $("staffErrors").hidden = true; toStaff(); renderTerms(); setToday(); newJob(); drawSvcAuto(); window.scrollTo(0,0);
+}
+$("resetForm").onclick = resetForm;
+
+/* ---------- done / email ---------- */
+function termLine(t,i){
+  const head = /^\d+\./.test(t.title) ? t.title : `${i+1}. ${t.title}`;
+  return `${head}${t.initials ? "  [Initials: " + t.initials + "]" : ""}\n${t.text}\n`;
+}
+function copyText(r){
+  return [
+    `${r.business.name}`, `${r.business.address}`, `${r.business.phone}`, ``,
+    `${(r.docTitle || "Final Payment & Service Acceptance").toUpperCase()}`, `Agreement #: ${r.id}`, `Signed: ${r.signedAtLocal}`, ``,
+    `Customer: ${r.customer.name}  ·  ${r.customer.phone}`,
+    r.vehicle || r.plate ? `Vehicle: ${[r.vehicle, r.plate].filter(Boolean).join(" · ")}` : null,
+    r.invoice ? `Invoice #: ${r.invoice}` : null,
+    r.services ? `Services: ${r.services.join(", ")}` : null,
+    r.service ? `Notes: ${r.service}` : null,
+    ...(r.bill ? billLines(r.bill).map(([k,v]) => `${k}: $${v.toFixed(2)}`) : []),
+    `Final total paid: $${r.amount.toFixed(2)}  ·  ${r.method}${r.last4 ? " ending " + r.last4 : ""}`, ``,
+    `I agreed to the following:`,
+    ...r.terms.map((t,i) => termLine(t,i)), ``, r.esign, ``,
+    `Signed electronically by: ${r.printedName}`, r.shopRep ? `Shop representative: ${r.shopRep}` : null
+  ].filter(x => x !== null).join("\n");
+}
+function showDone(r){
+  $("doneId").textContent = r.id;
+  $("doneWhen").textContent = r.signedAtLocal;
+  $("doneEmail").value = r.customer.email || "";
+  $("copyText").value = copyText(r);
+  $("emailNote").hidden = true; $("emailBtn").textContent = "Email me a copy"; $("emailBtn").disabled = false;
+  show("screenDone");
+}
+$("emailBtn").onclick = async () => {
+  const to = $("doneEmail").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ toast("Enter a valid email address."); return; }
+  const r = lastSaved, note = $("emailNote");
+  const href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(`Your signed agreement ${r.id} - ${r.business.name}`)}&body=${encodeURIComponent(copyText(r))}`;
+  window.location.href = href;
+  note.textContent = "Your email app should open with the copy ready. Tap Send to deliver it.";
+  note.style.color = "var(--ok)"; note.hidden = false;
+  try{ await db.collection("agreements").doc(r.id).update({ emailedTo: to, emailOfferedAt: new Date().toISOString() }); }catch(_){}
+};
+function emailHtml(r){
+  const e = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const row = (k,v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#555">${e(k)}</td><td style="padding:4px 0"><b>${e(v)}</b></td></tr>` : "";
+  return `<div style="font-family:Arial,sans-serif;max-width:640px;color:#111;line-height:1.45">
+<h2 style="margin:0">${e(r.business.name)}</h2><div style="color:#555">${e(r.business.address)} · ${e(r.business.phone)}</div>
+<p>Hi ${e(r.customer.name)}, here is a copy of the agreement you signed today. Thank you for your business.</p>
+<table style="border-collapse:collapse">${row("Invoice #", r.id)}${row("Signed", r.signedAtLocal)}${row("Services", (r.services||[]).join(", "))}${row("Notes", r.service)}${r.bill ? billLines(r.bill).map(([k,v]) => row(k, "$" + v.toFixed(2))).join("") : ""}${row("Final total paid", "$" + r.amount.toFixed(2) + " · " + r.method + (r.last4 ? " ending " + r.last4 : ""))}${row("Shop representative", r.shopRep)}</table>
+<h3>What you initialed</h3>
+${r.terms.map(t => `<div style="border:1px solid #ddd;padding:10px 12px;margin-bottom:8px"><b>${e(t.title)}</b> ${t.initials ? `<span style="float:right">Initials: <b>${e(t.initials)}</b></span>` : ""}<div style="white-space:pre-line;margin-top:6px">${e(t.text)}</div></div>`).join("")}
+<p style="color:#555">${e(r.esign)}</p>
+<p>Signed electronically by <b>${e(r.printedName)}</b>.</p>
+<p style="color:#555">Questions? Call us at ${e(r.business.phone)}.</p></div>`;
+}
+$("copyBtn").onclick = async () => {
+  try{ await navigator.clipboard.writeText($("copyText").value); toast("Copied"); }
+  catch{ $("copyText").select(); toast("Text selected. Use your device's Copy."); }
+};
+$("nextCustomer").onclick = () => { resetForm(); show("screenForm"); };
+
+/* ---------- navigation + PIN ---------- */
+const screens = ["screenForm","screenDone","screenRecords","screenDetail","screenSettings"];
+let unlocked = false;
+function show(id){
+  screens.forEach(s => $(s).hidden = s !== id);
+  $("navNew").hidden = id === "screenForm";
+  $("navRecords").hidden = id === "screenRecords" || id === "screenDone";
+  $("navSettings").hidden = id === "screenSettings" || id === "screenDone";
+  if(id === "screenForm" || id === "screenDone") unlocked = false;
+  if(id === "screenForm") requestAnimationFrame(sizePad);
+  window.scrollTo(0,0);
+}
+let pinBuf = "", pinThen = null;
+function askPin(then){
+  if(unlocked){ then(); return; }
+  pinBuf = ""; pinThen = then; $("pinErr").textContent = ""; drawDots(); $("pinModal").hidden = false;
+}
+function drawDots(){ $("pinDots").innerHTML = ""; const n = Math.max(4, pinBuf.length); for(let i=0;i<n;i++){ const d = document.createElement("i"); if(i < pinBuf.length) d.className = "on"; $("pinDots").appendChild(d);} }
+["1","2","3","4","5","6","7","8","9","⌫","0","OK"].forEach(k => {
+  const b = document.createElement("button"); b.type = "button"; b.textContent = k;
+  if(k === "OK") b.className = "btn-primary";
+  b.onclick = () => {
+    if(k === "⌫") pinBuf = pinBuf.slice(0,-1);
+    else if(k === "OK"){
+      if(pinBuf === String(biz.pin)){ $("pinModal").hidden = true; unlocked = true; const t = pinThen; pinThen = null; t && t(); return; }
+      $("pinErr").textContent = "Wrong PIN. Try again."; pinBuf = "";
+    } else if(pinBuf.length < 8) pinBuf += k;
+    drawDots();
+  };
+  $("pinPad").appendChild(b);
+});
+$("pinCancel").onclick = () => { $("pinModal").hidden = true; pinThen = null; };
+$("navNew").onclick = () => show("screenForm");
+$("navRecords").onclick = () => askPin(openRecords);
+$("navSettings").onclick = () => askPin(openSettings);
+
+/* ---------- records ---------- */
+const money = n => "$" + Number(n||0).toFixed(2);
+function fmtShort(iso){ try{ return new Date(iso).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}); }catch{ return iso; } }
+function openRecords(){
+  show("screenRecords");
+  if(!db){ $("recList").innerHTML = '<div class="empty">Storage isn\'t available on this device. Make sure the browser isn\'t in private mode.</div>'; return; }
+  if(!unsub){
+    unsub = db.collection("agreements").orderBy("signedAt","desc").limit(1000).onSnapshot(
+      snap => { records = snap.docs.map(d => d.data()); drawList(); },
+      () => { $("recList").innerHTML = '<div class="empty">Couldn\'t load records. Reload the page.</div>'; unsub = null; }
+    );
+  } else drawList();
+}
+function drawList(){
+  const q = $("recSearch").value.trim().toLowerCase();
+  const list = q ? records.filter(r => (r.search||"").includes(q)) : records;
+  $("recCount").textContent = `${list.length} of ${records.length}`;
+  const box = $("recList"); box.innerHTML = "";
+  if(!list.length){ box.innerHTML = `<div class="empty">${records.length ? "No matches." : "No signed agreements yet."}</div>`; return; }
+  list.forEach(r => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "rec";
+    b.innerHTML = `<span class="nm"></span><span class="amt"></span><span class="meta"></span><span class="meta" style="text-align:right"></span>`;
+    const s = b.querySelectorAll("span");
+    s[0].textContent = r.customer?.name || "—";
+    s[1].textContent = money(r.amount);
+    s[2].textContent = `${fmtShort(r.signedAt)} · ${r.method}${r.last4 ? " ••" + r.last4 : ""}${r.invoice ? " · Inv " + r.invoice : ""}`;
+    s[3].innerHTML = `<span class="mono"></span>`; s[3].firstChild.textContent = r.id;
+    b.onclick = () => openDetail(r);
+    box.appendChild(b);
+  });
+}
+$("recSearch").addEventListener("input", drawList);
+$("backToList").onclick = () => { $("delConfirm").hidden = true; show("screenRecords"); };
+
+function photoSrc(r){ return r.photoId ? "/_blob/" + r.photoId : (r.photoData || null); }
+function openDetail(r){
+  currentRec = r; $("delConfirm").hidden = true;
+  const body = $("detailBody"); body.innerHTML = "";
+  const h = document.createElement("div"); h.className = "row"; h.style.justifyContent = "space-between";
+  h.innerHTML = `<h2 style="font-size:28px;text-transform:uppercase"></h2><span class="pill">Signed</span>`;
+  h.querySelector("h2").textContent = r.customer?.name || "";
+  body.appendChild(h);
+  const dl = document.createElement("dl"); dl.className = "kv"; dl.style.margin = "0";
+  const rows = [
+    ["Agreement #", r.id, true], ["Signed", r.signedAtLocal], ["Phone", r.customer?.phone], ["Email", r.customer?.email],
+    ["Vehicle", [r.vehicle, r.plate].filter(Boolean).join(" · ")], ["Invoice #", r.invoice], ["Services", (r.services||[]).join(", ")], ["Notes", r.service], ["Shop representative", r.shopRep],
+    ...(r.bill ? billLines(r.bill).map(([k,v]) => [k, money(v), true]) : []), ["Final total", money(r.amount), true], ["Payment", r.method + (r.last4 ? " ending " + r.last4 : "")],
+    ["Copy emailed to", r.emailedTo ? `${r.emailedTo} (email opened ${fmtShort(r.emailSentAt || r.emailOfferedAt)})` : "Not sent"],
+    ["Device", r.device]
+  ];
+  rows.forEach(([k,val,mono]) => { if(!val) return; const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = val; if(mono) dd.className = "mono"; dl.append(dt, dd); });
+  body.appendChild(dl);
+  const h3 = document.createElement("h3"); h3.textContent = "Terms accepted"; h3.style.fontSize = "22px"; h3.style.textTransform = "uppercase"; body.appendChild(h3);
+  const pre = document.createElement("pre"); pre.className = "agree-snap";
+  pre.textContent = r.terms.map((t,i) => termLine(t,i)).join("\n") + "\n" + (r.esign || "");
+  body.appendChild(pre);
+  const h4 = document.createElement("h3"); h4.textContent = "Signature"; h4.style.fontSize = "22px"; h4.style.textTransform = "uppercase"; body.appendChild(h4);
+  const sig = document.createElement("img"); sig.className = "sigimg"; sig.alt = "Customer signature"; sig.src = r.signature; body.appendChild(sig);
+  const pn = document.createElement("p"); pn.className = "fine"; pn.textContent = "Printed name: " + r.printedName; body.appendChild(pn);
+  const src = photoSrc(r);
+  if(src){
+    const h5 = document.createElement("h3"); h5.textContent = "Photo"; h5.style.fontSize = "22px"; h5.style.textTransform = "uppercase"; body.appendChild(h5);
+    const im = document.createElement("img"); im.alt = "Photo taken at signing"; im.src = src; im.style.maxWidth = "100%"; im.style.borderRadius = "8px";
+    im.onerror = () => { im.replaceWith(Object.assign(document.createElement("p"),{className:"fine",textContent:"Photo file is missing."})); };
+    body.appendChild(im);
+  }
+  $("saveCopy").hidden = !downloads;
+  show("screenDetail");
+}
+
+async function toDataUrl(src){
+  if(!src || src.startsWith("data:")) return src;
+  try{ const res = await fetch(src); if(!res.ok) return null; return await blobToDataUrl(await res.blob()); }catch{ return null; }
+}
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+$("saveCopy").onclick = async () => {
+  const r = currentRec; if(!r || !downloads) return;
+  const photo = await toDataUrl(photoSrc(r));
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${esc(r.id)} – ${esc(r.customer.name)}</title>
+<style>body{font-family:Arial,sans-serif;max-width:760px;margin:30px auto;padding:0 16px;color:#111;line-height:1.45}h1{margin:0}table{border-collapse:collapse;width:100%;margin:16px 0}td{border:1px solid #ccc;padding:6px 10px;vertical-align:top}td:first-child{width:180px;font-weight:bold;background:#f4f4f4}.sig{border:1px solid #999;max-width:420px}li{margin-bottom:8px}</style></head><body>
+<h1>${esc(r.business.name)}</h1><div>${esc(r.business.address)} · ${esc(r.business.phone)}</div>
+<h2>${esc(r.docTitle || "Final Payment & Service Acceptance Agreement")}</h2>
+<table>
+<tr><td>Agreement #</td><td>${esc(r.id)}</td></tr>
+<tr><td>Signed</td><td>${esc(r.signedAtLocal)}<br><small>UTC: ${esc(r.signedAt)}</small></td></tr>
+<tr><td>Customer</td><td>${esc(r.customer.name)}</td></tr>
+<tr><td>Phone</td><td>${esc(r.customer.phone)}</td></tr>
+${r.customer.email ? `<tr><td>Email</td><td>${esc(r.customer.email)}</td></tr>` : ""}
+${r.vehicle || r.plate ? `<tr><td>Vehicle</td><td>${esc([r.vehicle, r.plate].filter(Boolean).join(" · "))}</td></tr>` : ""}
+${r.invoice ? `<tr><td>Invoice #</td><td>${esc(r.invoice)}</td></tr>` : ""}
+<tr><td>Date</td><td>${esc(new Date(r.signedAt).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}))}</td></tr>
+${r.services ? `<tr><td>Services</td><td>${esc(r.services.join(", "))}</td></tr>` : ""}
+${r.service ? `<tr><td>Notes</td><td>${esc(r.service)}</td></tr>` : ""}
+${r.shopRep ? `<tr><td>Shop representative</td><td>${esc(r.shopRep)}</td></tr>` : ""}
+${r.bill ? billLines(r.bill).map(([k,v]) => `<tr><td>${esc(k)}</td><td>${esc(money(v))}</td></tr>`).join("") : ""}
+<tr><td>Final total paid</td><td><b>${esc(money(r.amount))}</b></td></tr>
+<tr><td>Payment method</td><td>${esc(r.method)}${r.last4 ? " ending " + esc(r.last4) : ""}</td></tr>
+<tr><td>Copy emailed to</td><td>${r.emailedTo ? esc(r.emailedTo) + " (email opened " + esc(r.emailSentAt || r.emailOfferedAt) + ")" : "Not sent"}</td></tr>
+<tr><td>Signing device</td><td><small>${esc(r.device)}</small></td></tr>
+</table>
+<h3>Sections the customer read and initialed</h3>
+${r.terms.map((t,i) => `<div style="border:1px solid #ccc;padding:10px 12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:12px"><b>${esc(/^\d+\./.test(t.title) ? t.title : (i+1) + ". " + t.title)}</b>${t.initials ? `<span style="border:1px solid #333;padding:2px 10px;font-weight:bold">Initials: ${esc(t.initials)}</span>` : "&#9745;"}</div><div style="white-space:pre-line;margin-top:6px">${esc(t.text)}</div></div>`).join("")}
+<p>${esc(r.esign)}</p>
+<h3>Customer signature</h3><img class="sig" src="${r.signature}" alt="signature"><p>Printed name: ${esc(r.printedName)}</p>
+${photo ? `<h3>Photo taken at signing</h3><img src="${photo}" style="max-width:100%" alt="photo">` : ""}
+<p style="margin-top:30px;font-size:12px;color:#666">Agreement text version ${esc(r.agreementVersion)}. Record created electronically at time of signing.</p>
+</body></html>`;
+  try{ await downloads.save({ filename: `${r.id} ${r.customer.name}.html`, data: html }); toast("Saved"); }
+  catch(e){ if(e && e.code !== "declined") toast("Couldn't save the file here."); }
+};
+$("delRec").onclick = () => $("delConfirm").hidden = false;
+$("delNo").onclick = () => $("delConfirm").hidden = true;
+$("delYes").onclick = async () => {
+  const r = currentRec; if(!r) return;
+  try{
+    await db.collection("agreements").doc(r.id).delete();
+    if(r.photoId && assets){ try{ await assets.delete(r.photoId); }catch(_){} }
+    toast("Deleted"); show("screenRecords");
+  }catch{ toast("Couldn't delete. Try again."); }
+};
+
+/* ---------- settings ---------- */
+function openSettings(){
+  $("setName").value = biz.name; $("setPhone").value = biz.phone; $("setAddr").value = biz.address; $("setPin").value = ""; $("setTax").value = biz.taxRate; $("setFeePct").value = biz.feePct; $("setFeeFixed").value = biz.feeFixed;
+  show("screenSettings");
+}
+$("setCancel").onclick = () => show("screenForm");
+const numOr = (v, d) => { const n = parseFloat(v); return isFinite(n) && n >= 0 ? n : d; };
+$("settingsForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const pin = $("setPin").value.trim();
+  if(pin && !/^\d{4,8}$/.test(pin)){ toast("PIN must be 4 to 8 digits."); return; }
+  const next = { name: $("setName").value.trim() || DEFAULTS.name, phone: $("setPhone").value.trim(), address: $("setAddr").value.trim(), pin: pin || biz.pin,
+    taxRate: numOr($("setTax").value, DEFAULTS.taxRate), feePct: numOr($("setFeePct").value, DEFAULTS.feePct), feeFixed: numOr($("setFeeFixed").value, DEFAULTS.feeFixed) };
+  if(!db){ toast("Settings can't be saved here."); return; }
+  try{ await db.doc("config/business").set(next); biz = next; applyBiz(); toast("Settings saved"); show("screenForm"); }
+  catch{ toast("Couldn't save settings. Try again."); }
+});
+
+/* ---------- toast ---------- */
+let tt;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3200); }
+
+/* ---------- boot ---------- */
+function setToday(){ $("todayDate").textContent = new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}); }
+applyBiz(); sizePad(); setToday(); newJob();
+/* ---------- local storage (IndexedDB) ---------- */
+function makeLocalDB(){
+  const open = new Promise((res, rej) => {
+    const r = indexedDB.open("tirespot-signoff", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("docs", { keyPath: "path" });
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  const run = (mode, fn) => open.then(d => new Promise((res, rej) => {
+    const t = d.transaction("docs", mode), req = fn(t.objectStore("docs"));
+    t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+  }));
+  const getOne = p => run("readonly", st => st.get(p));
+  const getAll = () => run("readonly", st => st.getAll());
+  const put = (p, data) => run("readwrite", st => st.put({ path: p, col: p.split("/")[0], data: JSON.parse(JSON.stringify(data)) }));
+  const del = p => run("readwrite", st => st.delete(p));
+  const listeners = new Set();
+  const notify = () => listeners.forEach(fn => fn());
+  const snap = (p, rec) => ({ id: p.split("/").pop(), exists: !!rec, data: () => rec ? rec.data : undefined });
+  const doc = p => ({
+    id: p.split("/").pop(), path: p,
+    get: async () => snap(p, await getOne(p)),
+    set: async data => { await put(p, data); notify(); },
+    update: async patch => { const rec = await getOne(p); if(!rec) throw { code: "invalid_argument" }; await put(p, { ...rec.data, ...patch }); notify(); },
+    delete: async () => { await del(p); notify(); },
+    onSnapshot(next, err){ const go = () => getOne(p).then(r => next(snap(p, r)), e => err && err(e)); listeners.add(go); go(); return () => listeners.delete(go); }
+  });
+  const query = (col, field, dir, n) => ({
+    limit: m => query(col, field, dir, m),
+    async get(){
+      let list = (await getAll()).filter(r => r.col === col).map(r => r.data);
+      if(field) list.sort((x, y) => { const a = x[field] ?? "", b = y[field] ?? ""; return (a < b ? -1 : a > b ? 1 : 0) * (dir === "desc" ? -1 : 1); });
+      if(n) list = list.slice(0, n);
+      return { docs: list.map(d => ({ id: d.id, exists: true, data: () => d })), size: list.length, empty: !list.length };
+    },
+    onSnapshot(next, err){ const go = () => this.get().then(next, e => err && err(e)); listeners.add(go); go(); return () => listeners.delete(go); }
+  });
+  return {
+    doc,
+    collection: col => ({ doc: id => doc(col + "/" + id), orderBy: (f, d) => query(col, f, d), limit: n => query(col, null, null, n), get: () => query(col).get() })
+  };
+}
+const localDownloads = {
+  async save({ filename, data }){
+    const types = { html: "text/html", json: "application/json", csv: "text/csv" };
+    const ext = filename.split(".").pop().toLowerCase();
+    const blob = data instanceof Blob ? data : new Blob([data], { type: (types[ext] || "application/octet-stream") + ";charset=utf-8" });
+    const url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    return { status: "saved" };
+  }
+};
+try{ db = window.indexedDB ? makeLocalDB() : null; }catch(_){ db = null; }
+downloads = localDownloads;
+if(db){
+  db.doc("config/business").onSnapshot(s => { if(s.exists){ biz = { ...DEFAULTS, ...s.data() }; applyBiz(); } }, () => {});
+  db.doc("config/meta").onSnapshot(s => drawLastBackup(s.exists ? s.data().lastBackupAt : null), () => {});
+}
+try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(_){}
+
+/* ---------- backups ---------- */
+function drawLastBackup(iso){
+  const el = $("lastBackup"), bar = el.closest(".backup-bar");
+  if(!iso){ el.textContent = "· Never backed up"; bar.classList.add("stale"); return; }
+  const days = Math.floor((Date.now() - new Date(iso)) / 86400000);
+  el.textContent = `· Last backup ${fmtShort(iso)}`;
+  bar.classList.toggle("stale", days >= 7);
+}
+const stamp = () => new Date().toISOString().slice(0,10);
+async function allAgreements(){ return (await db.collection("agreements").orderBy("signedAt","desc").get()).docs.map(d => d.data()); }
+$("backupBtn").onclick = async () => {
+  if(!db) return;
+  const agreements = await allAgreements();
+  const settings = (await db.doc("config/business").get()).data() || null;
+  const data = JSON.stringify({ app: "tirespot-signoff", version: 1, exportedAt: new Date().toISOString(), settings, agreements });
+  await downloads.save({ filename: `TireSpot-SignOff-backup-${stamp()}.json`, data });
+  try{ await db.doc("config/meta").set({ lastBackupAt: new Date().toISOString() }); }catch(_){}
+  toast(`Backup saved: ${agreements.length} records. Check your Downloads folder.`);
+};
+$("csvBtn").onclick = async () => {
+  if(!db) return;
+  const q = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
+  const head = ["Invoice #","Signed","Customer","Phone","Email","Services","Notes","Tires","Service","Sales tax","Card fee","Final total","Payment","Card last 4","Emailed to"];
+  const rows = (await allAgreements()).map(r => [r.id, r.signedAtLocal, r.customer?.name, r.customer?.phone, r.customer?.email, (r.services||[]).join("; "), r.service,
+    r.bill?.tires, r.bill?.service, r.bill?.tax, r.bill?.fee, r.amount, r.method, r.last4, r.emailedTo].map(q).join(","));
+  await downloads.save({ filename: `TireSpot-SignOff-records-${stamp()}.csv`, data: [head.map(q).join(","), ...rows].join("\r\n") });
+  toast("Spreadsheet saved to Downloads.");
+};
+$("restoreFile").addEventListener("change", async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = "";
+  if(!f || !db) return;
+  try{
+    const data = JSON.parse(await f.text());
+    if(data.app !== "tirespot-signoff" || !Array.isArray(data.agreements)) throw new Error("bad");
+    let added = 0;
+    for(const r of data.agreements){
+      if(!r || !r.id) continue;
+      const ref = db.collection("agreements").doc(r.id);
+      if(!(await ref.get()).exists){ await ref.set(r); added++; }
+    }
+    if(data.settings && !(await db.doc("config/business").get()).exists) await db.doc("config/business").set(data.settings);
+    toast(`Restored ${added} records. ${data.agreements.length - added} were already here.`);
+  }catch(_){ toast("That file isn't a Sign-Off backup. Pick the .json backup file."); }
+});
+
+/* ---------- install, offline, screen on ---------- */
+let installEvt = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("installBtn").hidden = false; });
+$("installBtn").onclick = async () => { if(!installEvt) return; installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; $("installBtn").hidden = true; };
+window.addEventListener("appinstalled", () => { $("installBtn").hidden = true; toast("Installed. Open Sign-Off from your home screen."); });
+if("serviceWorker" in navigator && location.protocol !== "file:"){ navigator.serviceWorker.register("sw.js").catch(() => {}); }
+let wake = null;
+async function keepAwake(){ try{ if("wakeLock" in navigator && !wake && document.visibilityState === "visible"){ wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => wake = null); } }catch(_){} }
+document.addEventListener("pointerdown", keepAwake, { once: false, passive: true });
+document.addEventListener("visibilitychange", keepAwake);
+})();
+</script>
+</body>
+</html>
