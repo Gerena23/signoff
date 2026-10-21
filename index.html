@@ -105,6 +105,9 @@ textarea{min-height:96px;resize:vertical}
 .term.autofilled .ini input{box-shadow:0 0 0 4px var(--ok-soft)}
 .backup-bar{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .backup-bar.stale{border-color:var(--accent);background:var(--accent-soft)}
+.langsw{display:inline-flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.langsw button{min-height:44px;padding:0 16px;border:0;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.langsw button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .waiver-h{text-align:center;display:grid;gap:4px;padding-block:4px 8px}
 .waiver-h h2{font-size:30px;text-transform:uppercase}
 .waiver-h p{margin:0;color:var(--muted)}
@@ -178,7 +181,7 @@ textarea{min-height:96px;resize:vertical}
     <form id="form" novalidate>
      <!-- STAFF PART -->
      <div id="staffPart" class="stack">
-      <div class="staff-banner"><b>Staff</b> Set up the job, then hand the tablet to the customer.</div>
+      <div class="staff-banner"><b>Staff</b> <span>Set up the job, then hand the tablet to the customer.</span> <span style="margin-left:auto;display:flex;gap:8px;align-items:center"><span class="fine" style="color:inherit;opacity:.8">Customer language</span><div class="langsw" role="group" aria-label="Customer language / Idioma del cliente"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="es" aria-pressed="false">Español</button></div></span></div>
       <section class="section">
         <div class="step-h"><span class="n">1</span><h2>Services provided</h2></div>
         <p class="fine">Pick everything done today. The customer only sees and initials the waiver sections for these services.</p>
@@ -193,9 +196,13 @@ textarea{min-height:96px;resize:vertical}
           <div class="auto-row"><span class="auto-k">Services</span><span id="svcAuto" class="svc-chips"><em class="fine">Pick services above</em></span></div>
         </div>
         <label class="f">Notes (optional)<textarea id="service" placeholder="Tire size, quantity, anything else. Example: 2 tires 225/45R17"></textarea></label>
-        <div class="grid">
-          <label class="f"><span>Tires total <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="tiresTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label>
-          <label class="f"><span>Service total <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="serviceTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label>
+        <p class="fine">Enter the quantity and amount for each service you picked above.</p>
+        <div class="stack" id="amtBoxes">
+          <div class="grid" id="usedBox" hidden><label class="f"><span>Number of used tires <span class="req">*</span></span><input type="number" id="usedCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>Used tires total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="usedTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+          <div class="grid" id="newCountBox" hidden><label class="f"><span>Number of new tires <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0" id="flFeeHint"></span></span><input type="number" id="newTireCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>New tires total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="newTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+          <div class="grid" id="alignBox" hidden><label class="f"><span>Alignment total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="alignTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+          <div class="grid" id="mechBox" hidden><label class="f"><span>Vehicle service total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="mechTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+          <div class="grid" id="disposeBox" hidden><label class="f"><span>Tires left for disposal <span class="req">*</span></span><input type="number" id="disposeCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>Disposal price per tire <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="disposePrice" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
         </div>
         <input type="hidden" id="amount">
         <div class="bill" id="bill" aria-live="polite"></div>
@@ -229,51 +236,52 @@ textarea{min-height:96px;resize:vertical}
 
      <!-- CUSTOMER PART -->
      <div id="custPart" class="stack" hidden>
+      <div class="row" style="justify-content:flex-end"><span class="fine">Idioma / Language</span><div class="langsw" role="group" aria-label="Customer language / Idioma del cliente"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="es" aria-pressed="false">Español</button></div></div>
       <div class="waiver-h">
-        <h2>Tire &amp; Vehicle Service · Liability &amp; Warranty Waiver</h2>
-        <p>For used tires, new tires, alignments &amp; general mechanical work</p>
-        <p class="fine">Customer information, initials and signature required.</p>
+        <h2 data-i18n>Tire &amp; Vehicle Service · Liability &amp; Warranty Waiver</h2>
+        <p data-i18n>For used tires, new tires, alignments &amp; vehicle service</p>
+        <p class="fine" data-i18n>Customer information, initials and signature required.</p>
       </div>
 
       <section class="section">
-        <div class="step-h"><span class="n">1</span><h2>Your service today</h2></div>
+        <div class="step-h"><span class="n">1</span><h2 data-i18n>Your service today</h2></div>
         <dl class="kv" id="jobSummary" style="margin:0"></dl>
-        <p class="fine">Something wrong here? Tell staff before you sign.</p>
+        <p class="fine" data-i18n>Something wrong here? Tell staff before you sign.</p>
       </section>
 
       <section class="section">
-        <div class="step-h"><span class="n">2</span><h2>Your information</h2></div>
+        <div class="step-h"><span class="n">2</span><h2 data-i18n>Your information</h2></div>
         <div class="grid">
-          <label class="f"><span>Full name <span class="req">*</span></span><input type="text" id="custName" autocomplete="off"></label>
-          <label class="f"><span>Phone <span class="req">*</span></span><input type="tel" id="custPhone" autocomplete="off" inputmode="tel"></label>
-          <label class="f">Email (for your copy)<input type="email" id="custEmail" autocomplete="off" inputmode="email"></label>
+          <label class="f"><span><span data-i18n>Full name</span> <span class="req">*</span></span><input type="text" id="custName" autocomplete="off"></label>
+          <label class="f"><span><span data-i18n>Phone</span> <span class="req">*</span></span><input type="tel" id="custPhone" autocomplete="off" inputmode="tel"></label>
+          <label class="f"><span data-i18n>Email (for your copy)</span><input type="email" id="custEmail" autocomplete="off" inputmode="email"></label>
         </div>
       </section>
 
       <section class="section">
-        <div class="step-h"><span class="n">3</span><h2>Read &amp; initial</h2></div>
+        <div class="step-h"><span class="n">3</span><h2 data-i18n>Read &amp; initial</h2></div>
         <p class="fine" id="termsHint"></p>
         <div class="terms" id="terms"></div>
         <p class="fine" id="esignNote"></p>
       </section>
 
       <section class="section">
-        <div class="step-h"><span class="n">4</span><h2>Sign</h2></div>
+        <div class="step-h"><span class="n">4</span><h2 data-i18n>Sign</h2></div>
         <div class="padbox" id="padbox">
           <canvas id="pad" aria-label="Signature pad. Sign with your finger."></canvas>
           <div class="x"></div>
-          <div class="hint">Sign with your finger</div>
+          <div class="hint" data-i18n>Sign with your finger</div>
         </div>
         <div class="row" style="justify-content:space-between">
-          <label class="f" style="flex:1 1 260px"><span>Printed name <span class="req">*</span></span><input type="text" id="printName" autocomplete="off"></label>
-          <button type="button" class="btn-quiet" id="clearSig" style="align-self:end">Clear signature</button>
+          <label class="f" style="flex:1 1 260px"><span><span data-i18n>Printed name</span> <span class="req">*</span></span><input type="text" id="printName" autocomplete="off"></label>
+          <button type="button" class="btn-quiet" id="clearSig" style="align-self:end" data-i18n>Clear signature</button>
         </div>
       </section>
 
       <div id="formErrors" class="errors" hidden></div>
       <div class="submit-bar">
-        <button type="button" class="btn-quiet" id="backToStaff">Back to staff (PIN)</button>
-        <button type="submit" class="btn-primary" id="submitBtn">Sign &amp; submit</button>
+        <button type="button" class="btn-quiet" id="backToStaff" data-i18n>Back to staff (PIN)</button>
+        <button type="submit" class="btn-primary" id="submitBtn" data-i18n>Sign &amp; submit</button>
       </div>
      </div>
     </form>
@@ -283,8 +291,8 @@ textarea{min-height:96px;resize:vertical}
   <main id="screenDone" hidden>
     <section class="section done">
       <div class="check" aria-hidden="true">✓</div>
-      <h2>Signed. Thank you.</h2>
-      <p style="margin:0">Invoice <span class="mono" id="doneId"></span> is saved.</p>
+      <h2 data-i18n>Signed. Thank you.</h2>
+      <p style="margin:0"><span data-i18n>Invoice</span> <span class="mono" id="doneId"></span> <span data-i18n>is saved.</span></p>
       <p class="fine" id="doneWhen"></p>
       <div class="email-row">
         <input type="email" id="doneEmail" placeholder="Email for your copy" aria-label="Email for your copy">
@@ -292,9 +300,9 @@ textarea{min-height:96px;resize:vertical}
       </div>
       <p class="fine" id="emailNote" hidden></p>
       <details class="copybox">
-        <summary class="fine" style="cursor:pointer">Show the copy as text</summary>
+        <summary class="fine" style="cursor:pointer" data-i18n>Show the copy as text</summary>
         <textarea id="copyText" readonly aria-label="Agreement copy"></textarea>
-        <button type="button" class="btn-quiet" id="copyBtn" style="margin-top:8px">Copy text</button>
+        <button type="button" class="btn-quiet" id="copyBtn" style="margin-top:8px" data-i18n>Copy text</button>
       </details>
       <button type="button" class="btn-primary" id="nextCustomer" style="min-height:60px;font-size:20px">Done · next customer</button>
     </section>
@@ -353,6 +361,7 @@ textarea{min-height:96px;resize:vertical}
       <label class="f">Address<input type="text" id="setAddr"></label>
       <div class="grid">
         <label class="f">Sales tax % (tires)<input type="number" id="setTax" step="0.01" min="0" inputmode="decimal"></label>
+        <label class="f">FL new tire fee ($ per tire)<input type="number" id="setTireFee" step="0.01" min="0" inputmode="decimal"></label>
         <label class="f">Square fee %<input type="number" id="setFeePct" step="0.01" min="0" inputmode="decimal"></label>
         <label class="f">Square fee per sale ($)<input type="number" id="setFeeFixed" step="0.01" min="0" inputmode="decimal"></label>
       </div>
@@ -381,23 +390,74 @@ textarea{min-height:96px;resize:vertical}
 <script>
 (() => {
 const $ = id => document.getElementById(id);
-const DEFAULTS = { name: "The Tire Spot of Central Florida LLC", address: "8215 US Hwy 98 N, Lakeland, FL 33809", phone: "(863) 409-7556", pin: "1234", taxRate: 7, feePct: 2.6, feeFixed: 0.15 };
+const DEFAULTS = { name: "The Tire Spot of Central Florida LLC", address: "8215 US Hwy 98 N, Lakeland, FL 33809", phone: "(863) 409-7556", pin: "1234", taxRate: 7, tireFee: 1, feePct: 2.6, feeFixed: 0.15 };
 let biz = { ...DEFAULTS };
 let db = null, assets = null, downloads = null, mcp = null;
 let records = [], unsub = null, currentRec = null, lastSaved = null;
 let photoBlob = null;
-const AGREEMENT_VERSION = "2026-10-18";
+const AGREEMENT_VERSION = "2026-10-20";
+
+/* ---------- language (English / Spanish, Puerto Rico) ---------- */
+let lang = "en";
+const ES_UI = {
+  "Tire & Vehicle Service · Liability & Warranty Waiver":"Servicio de Gomas y Vehículos · Exención de Responsabilidad y Garantía",
+  "For used tires, new tires, alignments & vehicle service":"Para gomas usadas, gomas nuevas, alineaciones y servicio al vehículo",
+  "Customer information, initials and signature required.":"Se requiere su información, sus iniciales y su firma.",
+  "Your service today":"Su servicio de hoy",
+  "Something wrong here? Tell staff before you sign.":"¿Algo no está correcto? Avise al personal antes de firmar.",
+  "Your information":"Su información",
+  "Full name":"Nombre completo","Phone":"Teléfono","Email (for your copy)":"Correo electrónico (para su copia)",
+  "Read & initial":"Lea y escriba sus iniciales","Sign":"Firma","Sign with your finger":"Firme con el dedo",
+  "Printed name":"Nombre en letra de molde","Clear signature":"Borrar firma",
+  "Back to staff (PIN)":"Volver al personal (PIN)","Sign & submit":"Firmar y enviar","Saving…":"Guardando…",
+  "Signed. Thank you.":"Firmado. Gracias.","Invoice":"Factura","is saved.":"se guardó.",
+  "Email me a copy":"Envíeme una copia","Email for your copy":"Correo electrónico para su copia",
+  "Show the copy as text":"Mostrar la copia como texto","Copy text":"Copiar texto",
+  "Initials":"Iniciales",
+  "Please fix these before signing:":"Corrija lo siguiente antes de firmar:",
+  "Enter your full name.":"Escriba su nombre completo.","Enter your phone number.":"Escriba su número de teléfono.",
+  "Sign in the signature box.":"Firme en el recuadro de firma.",
+  "Enter your printed name under the signature.":"Escriba su nombre en letra de molde debajo de la firma.",
+  "Job details are incomplete. Hand the tablet back to staff.":"Faltan datos del trabajo. Devuelva la tableta al personal.",
+  "Couldn't save. Check the internet connection and tap Sign & submit again.":"No se pudo guardar. Intente de nuevo y toque Firmar y enviar.",
+  "Enter a valid email address.":"Escriba un correo electrónico válido.",
+  "Your email app should open with the copy ready. Tap Send to deliver it.":"Su aplicación de correo se abrirá con la copia lista. Toque Enviar.",
+  "Copied":"Copiado","Text selected. Use your device's Copy.":"Texto seleccionado. Use la opción Copiar de su dispositivo.",
+  "Services":"Servicios","Invoice #":"Factura #","Notes":"Notas","Final total":"Total final","Date":"Fecha",
+  "Customer":"Cliente","Agreement #: ":"Acuerdo #: ","Signed: ":"Firmado: ","Final total paid":"Total final pagado",
+  "I agreed to the following:":"Acepté lo siguiente:","Signed electronically by:":"Firmado electrónicamente por:",
+  "Shop representative":"Representante del taller","Your signed agreement":"Su acuerdo firmado",
+  "the total shown above":"el total indicado arriba",
+};
+const tr = s => (lang === "es" && ES_UI[s]) ? ES_UI[s] : s;
+const trL = (s, l) => (l === "es" && ES_UI[s]) ? ES_UI[s] : s;
+const METHOD_ES = { "Card - chip":"Tarjeta - chip", "Card - tap":"Tarjeta - toque", "Card - swiped":"Tarjeta - deslizada", "Card - keyed":"Tarjeta - digitada" };
+const payText = (m, last4, l) => (l === "es" ? (METHOD_ES[m] || m) : m) + (last4 ? (l === "es" ? " terminada en " : " ending ") + last4 : "");
+function applyLang(){
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    if(!el.dataset.en) el.dataset.en = el.textContent.trim();
+    el.textContent = tr(el.dataset.en);
+  });
+  $("doneEmail").placeholder = tr("Email for your copy");
+  document.documentElement.lang = lang === "es" ? "es-PR" : "en";
+  document.querySelectorAll(".langsw button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+}
+function setLang(l){
+  lang = l; applyLang(); renderTerms();
+  if(!$("custPart").hidden) fillSummary();
+}
 
 /* ---------- agreement text ---------- */
 const SERVICES = [
-  { key:"used",  label:"Used tires", adds:"used" },
-  { key:"new",   label:"New tires", adds:"newtire" },
-  { key:"align", label:"Alignment", adds:"mech" },
-  { key:"mech",  label:"General mechanical work", adds:"mech" },
+  { key:"used",  label:"Used tires", es:"Gomas usadas", adds:"used" },
+  { key:"new",   label:"New tires", es:"Gomas nuevas", adds:"newtire" },
+  { key:"align", label:"Alignment", es:"Alineación", adds:"mech" },
+  { key:"mech",  label:"Vehicle service", es:"Servicio al vehículo", adds:"mech" },
+  { key:"dispose", label:"Tire disposal fee", es:"Cargo por disposición de gomas", adds:"service" },
 ];
 const ALWAYS = ["road","service","release","payment"];
 const svcKeys = () => [...document.querySelectorAll('input[name="svc"]:checked')].map(i => i.value);
-const svcLabels = keys => SERVICES.filter(x => keys.includes(x.key)).map(x => x.label);
+const svcLabels = (keys, l) => SERVICES.filter(x => keys.includes(x.key)).map(x => l === "es" ? x.es : x.label);
 function terms(b, amount, method, keys){
   keys = keys || svcKeys();
   const amt = amount ? "$" + Number(amount).toFixed(2) : "the total shown above";
@@ -405,7 +465,7 @@ function terms(b, amount, method, keys){
     { key:"used", title:"Used Tire Acknowledgment (No Warranty)",
       intro:"I understand that used tires are sold as-is with NO warranty of any kind, including but not limited to:",
       bullets:["Tread Life","Defects","Leaks or Punctures","Blowouts","Performance or Longevity"],
-      outro:"Used tires are intended only as a temporary solution. I accept full responsibility for any failure or damage after installation." },
+      outro:"No Returns, No Refunds, and No Reimbursements. Used tires are intended only as a temporary solution. I accept full responsibility for any failure or damage after installation." },
     { key:"newtire", title:"New Tire Warranty Disclaimer",
       intro:"I understand that new tires only carry the manufacturer's defect warranty. This warranty does NOT cover:",
       bullets:["Potholes","Road Hazards","Nails or Debris","Curb Impact","Improper Inflation","Misalignment or Suspension Issues","Reckless Driving Behavior"],
@@ -414,7 +474,7 @@ function terms(b, amount, method, keys){
       intro:"I acknowledge that road hazards are not the responsibility of the shop, including:",
       bullets:["Potholes","Construction Debris","Glass, Metal, or Sharp Objects","Curbs or Impacts","Any Incident Causing Tire Failure"],
       outro:"I accept full responsibility for any damage caused by road conditions." },
-    { key:"mech", title:"Alignment & General Mechanical Work Disclaimer",
+    { key:"mech", title:"Alignment & Vehicle Service Disclaimer",
       intro:"I understand and agree that any mechanical work performed by the shop, including alignments, balancing, suspension checks, tire installation, or any other service, is not a guarantee that existing vehicle issues will be corrected or prevented. I acknowledge that:",
       bullets:["Alignments cannot fix worn or damaged suspension components","Pre-existing issues may affect alignment results","Steering pull, vibration, uneven wear, or handling problems may continue if caused by unrelated vehicle conditions",`${b.name} is not responsible for any future issues that arise after service`,`${b.name} is not liable for problems caused by parts, components, or conditions outside of the work performed.`],
       outro:"I agree that I will not hold the shop responsible for any mechanical, steering, suspension, or tire-related issues that occur after service, unless directly caused by proven negligence." },
@@ -433,11 +493,45 @@ function terms(b, amount, method, keys){
   ];
   const want = new Set(ALWAYS);
   SERVICES.forEach(x => { if(keys.includes(x.key)) want.add(x.adds); });
+  if(lang === "es"){
+    const nm = b.name, ph = b.phone;
+    const es = {
+      used:{ title:"Reconocimiento de Gomas Usadas (Sin Garantía)",
+        intro:"Entiendo que las gomas usadas se venden tal como están, SIN garantía de ningún tipo, incluyendo, entre otras:",
+        bullets:["Duración de la banda de rodaje","Defectos","Salideros de aire o ponchaduras","Reventones","Rendimiento o durabilidad"],
+        outro:"Sin Devoluciones, Sin Reembolsos y Sin Reintegros. Las gomas usadas son solamente una solución temporal. Acepto toda la responsabilidad por cualquier falla o daño después de la instalación." },
+      newtire:{ title:"Descargo de Garantía de Gomas Nuevas",
+        intro:"Entiendo que las gomas nuevas solo cuentan con la garantía contra defectos del fabricante. Esta garantía NO cubre:",
+        bullets:["Hoyos en la carretera","Peligros de la carretera","Clavos o escombros","Golpes contra el encintado","Inflado incorrecto","Problemas de alineación o de suspensión","Conducción imprudente"],
+        outro:"El taller no ofrece garantías adicionales a la garantía contra defectos del fabricante." },
+      road:{ title:"Exención por Peligros de la Carretera y Daños",
+        intro:"Reconozco que los peligros de la carretera no son responsabilidad del taller, incluyendo:",
+        bullets:["Hoyos en la carretera","Escombros de construcción","Vidrio, metal u objetos filosos","Encintados o impactos","Cualquier incidente que cause la falla de la goma"],
+        outro:"Acepto toda la responsabilidad por cualquier daño causado por las condiciones de la carretera." },
+      mech:{ title:"Descargo de Alineación y Servicio al Vehículo",
+        intro:"Entiendo y acepto que cualquier trabajo mecánico realizado por el taller, incluyendo alineaciones, balanceo, revisión de suspensión, instalación de gomas o cualquier otro servicio, no garantiza que se corrijan o se eviten problemas ya existentes en el vehículo. Reconozco que:",
+        bullets:["Las alineaciones no pueden arreglar componentes de suspensión desgastados o dañados","Los problemas previos pueden afectar los resultados de la alineación","Que el vehículo se vaya hacia un lado, las vibraciones, el desgaste desigual o los problemas de manejo pueden continuar si los causan condiciones del vehículo no relacionadas con el trabajo",`${nm} no es responsable de ningún problema futuro que surja después del servicio`,`${nm} no es responsable de problemas causados por piezas, componentes o condiciones ajenas al trabajo realizado.`],
+        outro:"Acepto que no responsabilizaré al taller por ningún problema mecánico, de dirección, de suspensión o relacionado con las gomas que ocurra después del servicio, a menos que sea causado directamente por negligencia comprobada." },
+      service:{ title:"Confirmación del Servicio",
+        intro:"Confirmo que:",
+        bullets:["Solicité que se realizaran los servicios","Inspeccioné las gomas y/o el vehículo antes y después del servicio","Recibí todos los servicios indicados en mi recibo","Estoy satisfecho(a) con la instalación y el trabajo al momento del servicio"],
+        outro:"" },
+      release:{ title:"Relevo de Responsabilidad",
+        intro:"Al firmar abajo, relevo al taller y a sus empleados de toda responsabilidad relacionada con:",
+        bullets:["Falla de las gomas","Daños al vehículo","Accidentes","Problemas de dirección o de manejo","Problemas de suspensión","Resultados de la alineación","Cualquier pérdida ocurrida después del servicio"],
+        outro:"Entiendo que la condición del vehículo, la duración de las gomas y su rendimiento dependen de los hábitos de manejo, las condiciones de la carretera, el mantenimiento del vehículo y el inflado adecuado, todo lo cual es responsabilidad mía." },
+      payment:{ title:"Autorización de Pago y Venta Final",
+        intro:"Acepto que:",
+        bullets:[`Autorizo el cargo de ${amount ? "$" + Number(amount).toFixed(2) : "el total indicado arriba"}${(keys && keys.length) ? " por " + svcLabels(keys, "es").join(", ") : ""} como pago final completo${method ? " con " + (METHOD_ES[method] || method).toLowerCase().replace(" - ", " (") + (method.includes(" - ") ? ")" : "") : ""}. Realicé esta compra y el cargo es válido.`,"Todas las ventas y servicios son finales. No se hacen reembolsos una vez completado el servicio.",`Si tengo algún problema con el trabajo, me comunicaré con ${nm} al ${ph} y le daré al taller la oportunidad de atenderlo antes de comunicarme con mi banco o con la compañía de mi tarjeta.`],
+        outro:"" },
+    };
+    list.forEach(t => { if(es[t.key]) Object.assign(t, es[t.key]); });
+  }
   const out = list.filter(t => want.has(t.key));
   out.forEach((t,i) => { t.num = i + 1; t.text = [t.intro, ...t.bullets.map(x => "• " + x), t.outro].filter(Boolean).join("\n"); });
   return out;
 }
-function esignText(b){ return `My electronic signature below has the same effect as a handwritten signature. ${b.name} keeps a copy of this signed record, including the date, time, and any photo taken.`; }
+function esignText(b){ if(lang === "es") return `Mi firma electrónica a continuación tiene el mismo efecto que una firma escrita a mano. ${b.name} conserva una copia de este registro firmado, incluyendo la fecha, la hora y cualquier foto tomada.`; return `My electronic signature below has the same effect as a handwritten signature. ${b.name} keeps a copy of this signed record, including the date, time, and any photo taken.`; }
 
 let lastInitials = "";
 function renderTerms(){
@@ -449,7 +543,7 @@ function renderTerms(){
     const card = document.createElement("div");
     card.className = "term";
     const id = "t_" + t.key;
-    card.innerHTML = `<div><b></b><p class="intro"></p><ul></ul><p class="outro"></p></div><label class="ini" for="${id}">Initials<input type="text" id="${id}" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>`;
+    card.innerHTML = `<div><b></b><p class="intro"></p><ul></ul><p class="outro"></p></div><label class="ini" for="${id}">${tr("Initials")}<input type="text" id="${id}" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>`;
     card.querySelector("b").textContent = t.num + ". " + t.title;
     card.querySelector(".intro").textContent = t.intro;
     const ul = card.querySelector("ul");
@@ -470,21 +564,66 @@ function renderTerms(){
   });
   $("esignNote").textContent = esignText(biz);
   const n = box.children.length;
-  $("termsHint").textContent = `Read each section and write your initials in the box beside it. All ${n} are required.`;
+  $("termsHint").textContent = lang === "es" ? `Lea cada sección y escriba sus iniciales en el recuadro al lado. Las ${n} son obligatorias.` : `Read each section and write your initials in the box beside it. All ${n} are required.`;
 }
 const r2 = n => Math.round((n + Number.EPSILON) * 100) / 100;
 function calcBill(){
-  const tires = r2(parseFloat($("tiresTotal").value) || 0), service = r2(parseFloat($("serviceTotal").value) || 0);
-  const subtotal = r2(tires + service);
-  const tax = r2(tires * (Number(biz.taxRate) || 0) / 100);
+  const keys = svcKeys(), has = k => keys.includes(k);
+  const gi = id => Math.max(0, Math.floor(parseFloat($(id).value) || 0));
+  const mv = id => r2(parseFloat($(id).value) || 0);
+  const usedCount = has("used") ? gi("usedCount") : 0, usedTotal = has("used") ? mv("usedTotal") : 0;
+  const tireCount = has("new") ? gi("newTireCount") : 0, newTotal = has("new") ? mv("newTotal") : 0;
+  const alignTotal = has("align") ? mv("alignTotal") : 0, mechTotal = has("mech") ? mv("mechTotal") : 0;
+  const tires = r2(usedTotal + newTotal), service = r2(alignTotal + mechTotal);
+  const tireFee = biz.tireFee != null ? Number(biz.tireFee) || 0 : DEFAULTS.tireFee;
+  const flFee = r2(tireCount * tireFee);
+  const disposeCount = has("dispose") ? gi("disposeCount") : 0;
+  const disposePrice = has("dispose") ? mv("disposePrice") : 0;
+  const disposeFee = r2(disposeCount * disposePrice);
+  const subtotal = r2(tires + flFee + service + disposeFee);
+  const tax = r2((tires + flFee) * (Number(biz.taxRate) || 0) / 100);
   const fee = subtotal > 0 ? r2((subtotal + tax) * (Number(biz.feePct) || 0) / 100 + (Number(biz.feeFixed) || 0)) : 0;
   const total = r2(subtotal + tax + fee);
-  return { tires, service, subtotal, tax, fee, total, taxRate: Number(biz.taxRate) || 0, feePct: Number(biz.feePct) || 0, feeFixed: Number(biz.feeFixed) || 0 };
+  return { ver:2, usedCount, usedTotal, tireCount, newTotal, alignTotal, mechTotal, tires, tireFee, flFee, disposeCount, disposePrice, disposeFee, service, subtotal, tax, fee, total, taxRate: Number(biz.taxRate) || 0, feePct: Number(biz.feePct) || 0, feeFixed: Number(biz.feeFixed) || 0 };
 }
-function billLines(b){
+function billLines(b, l){
+  if(b.ver !== 2) return billLinesLegacy(b, l);
+  const es = l === "es", m = x => Number(x).toFixed(2), hasFl = Number(b.flFee) > 0;
+  const n1 = (n, one, many) => n === 1 ? one : many;
+  const out = [];
+  if(b.usedCount > 0 || b.usedTotal > 0) out.push([es ? `${b.usedCount} ${n1(b.usedCount,"goma usada","gomas usadas")}` : `${b.usedCount} used ${n1(b.usedCount,"tire","tires")}`, b.usedTotal]);
+  if(b.tireCount > 0 || b.newTotal > 0) out.push([es ? `${b.tireCount} ${n1(b.tireCount,"goma nueva","gomas nuevas")}` : `${b.tireCount} new ${n1(b.tireCount,"tire","tires")}`, b.newTotal]);
+  if(hasFl) out.push([es ? `Cargo de la Florida por gomas nuevas (${b.tireCount} × $${m(b.tireFee)})` : `FL new tire fee (${b.tireCount} × $${m(b.tireFee)})`, b.flFee]);
+  if(b.alignTotal > 0) out.push([es ? "Alineación" : "Alignment", b.alignTotal]);
+  if(b.mechTotal > 0) out.push([es ? "Servicio al vehículo" : "Vehicle service", b.mechTotal]);
+  if(b.disposeFee > 0) out.push([es ? `Disposición de ${b.disposeCount} ${n1(b.disposeCount,"goma","gomas")} (${b.disposeCount} × $${m(b.disposePrice)}, sin impuesto)` : `Disposed of ${b.disposeCount} ${n1(b.disposeCount,"tire","tires")} (${b.disposeCount} × $${m(b.disposePrice)}, no tax)`, b.disposeFee]);
+  out.push(["Subtotal", b.subtotal]);
+  out.push([es ? `Impuesto sobre ventas (${b.taxRate}% sobre gomas${hasFl ? " + cargo de la Florida" : ""})` : `Sales tax (${b.taxRate}% on tires${hasFl ? " + FL fee" : ""})`, b.tax]);
+  out.push([es ? `Cargo de tarjeta Square (${b.feePct}% + $${m(b.feeFixed)})` : `Square card fee (${b.feePct}% + $${m(b.feeFixed)})`, b.fee]);
+  return out;
+}
+function billLinesLegacy(b, l){
+  if(l !== "es") return billLinesEn(b);
+  const hasFl = Number(b.flFee) > 0, m = x => Number(x).toFixed(2);
   return [
-    ["Tires", b.tires], ["Service", b.service], ["Subtotal", b.subtotal],
-    [`Sales tax (${b.taxRate}% on tires)`, b.tax],
+    ["Gomas", b.tires],
+    ...(hasFl ? [[`Cargo de la Florida por gomas nuevas (${b.tireCount} × $${m(b.tireFee)})`, b.flFee]] : []),
+    ["Servicio", b.service],
+    ...(Number(b.disposeFee) > 0 ? [[`Disposición de gomas (${b.disposeCount} × $${m(b.disposePrice)}, sin impuesto)`, b.disposeFee]] : []),
+    ["Subtotal", b.subtotal],
+    [`Impuesto sobre ventas (${b.taxRate}% sobre gomas${hasFl ? " + cargo de la Florida" : ""})`, b.tax],
+    [`Cargo de tarjeta Square (${b.feePct}% + $${m(b.feeFixed)})`, b.fee],
+  ];
+}
+function billLinesEn(b){
+  const hasFl = Number(b.flFee) > 0;
+  return [
+    ["Tires", b.tires],
+    ...(hasFl ? [[`FL new tire fee (${b.tireCount} × $${Number(b.tireFee).toFixed(2)})`, b.flFee]] : []),
+    ["Service", b.service],
+    ...(Number(b.disposeFee) > 0 ? [[`Tire disposal (${b.disposeCount} × $${Number(b.disposePrice).toFixed(2)}, no tax)`, b.disposeFee]] : []),
+    ["Subtotal", b.subtotal],
+    [`Sales tax (${b.taxRate}% on tires${hasFl ? " + FL fee" : ""})`, b.tax],
     [`Square card fee (${b.feePct}% + $${b.feeFixed.toFixed(2)})`, b.fee],
   ];
 }
@@ -499,7 +638,7 @@ const methodVal = () => (document.querySelector('input[name="method"]:checked')|
 
 /* ---------- branding ---------- */
 function applyBiz(){
-  if($("bill")) drawBill();
+  if($("bill")) { syncNewCount(); drawBill(); }
   $("bizName").textContent = biz.name;
   $("bizLine").textContent = [biz.address, biz.phone].filter(Boolean).join(" · ");
   renderTerms();
@@ -557,12 +696,19 @@ const blobToDataUrl = b => new Promise(r => { const fr = new FileReader(); fr.on
 /* ---------- services + hand-off ---------- */
 SERVICES.forEach(x => {
   const l = document.createElement("label");
-  const names = { used:"Used Tire Acknowledgment", newtire:"New Tire Warranty Disclaimer", mech:"Alignment & Mechanical Disclaimer" };
+  const names = { used:"Used Tire Acknowledgment", newtire:"New Tire Warranty Disclaimer", mech:"Alignment & Vehicle Service Disclaimer", service:"Service Confirmation" };
   l.innerHTML = `<input type="checkbox" name="svc" value="${x.key}"><span></span>`;
   const sp = l.querySelector("span"); sp.append(x.label); const sm = document.createElement("small"); sm.textContent = "Adds: " + names[x.adds]; sp.appendChild(sm);
-  l.querySelector("input").addEventListener("change", () => { renderTerms(); drawSvcAuto(); });
+  l.querySelector("input").addEventListener("change", () => { renderTerms(); drawSvcAuto(); syncNewCount(); drawBill(); resetPay(); });
   $("svcBox").appendChild(l);
 });
+function syncNewCount(){
+  const keys = svcKeys();
+  [["used","usedBox",["usedCount","usedTotal"]],["new","newCountBox",["newTireCount","newTotal"]],["align","alignBox",["alignTotal"]],["mech","mechBox",["mechTotal"]],["dispose","disposeBox",["disposeCount","disposePrice"]]]
+    .forEach(([k, box, ids]) => { const on = keys.includes(k); $(box).hidden = !on; if(!on) ids.forEach(id => $(id).value = ""); });
+  const fee = biz.tireFee != null ? Number(biz.tireFee) || 0 : DEFAULTS.tireFee;
+  $("flFeeHint").textContent = `(FL fee $${fee.toFixed(2)} per new tire is added)`;
+}
 const money2 = n => "$" + Number(n||0).toFixed(2);
 function showErrors(boxId, title, errs){
   const box = $(boxId);
@@ -575,7 +721,16 @@ function showErrors(boxId, title, errs){
 function staffErrors(){
   const v = id => $(id).value.trim(), errs = [];
   if(!svcKeys().length) errs.push("Pick at least one service.");
-  if(!(calcBill().subtotal > 0)) errs.push("Enter the tires total, the service total, or both.");
+  if(svcKeys().includes("dispose")){
+    if(!(calcBill().disposeCount >= 1)) errs.push("Enter how many tires are left for disposal.");
+    if(!(calcBill().disposePrice > 0)) errs.push("Enter the disposal price per tire.");
+  }
+  { const c = calcBill(), k = svcKeys();
+    if(k.includes("used")){ if(!(c.usedCount >= 1)) errs.push("Enter the number of used tires."); if(!(c.usedTotal > 0)) errs.push("Enter the used tires total."); }
+    if(k.includes("new")){ if(!(c.tireCount >= 1)) errs.push("Enter the number of new tires."); if(!(c.newTotal > 0)) errs.push("Enter the new tires total."); }
+    if(k.includes("align") && !(c.alignTotal > 0)) errs.push("Enter the alignment total.");
+    if(k.includes("mech") && !(c.mechTotal > 0)) errs.push("Enter the vehicle service total.");
+    if(!(c.subtotal > 0)) errs.push("Enter the amount for each service."); }
   const m = methodVal();
   if(!m) errs.push("Pick a payment method.");
   if(!/^\d{4}$/.test(v("last4"))) errs.push("Enter the last 4 digits of the card.");
@@ -584,12 +739,12 @@ function staffErrors(){
 function fillSummary(){
   const v = id => $(id).value.trim(), m = methodVal();
   const rows = [
-    ["Services", svcLabels(svcKeys()).join(", ")],
-    ["Invoice #", pendingId],
-    ...(v("service") ? [["Notes", v("service")]] : []),
-    ...billLines(calcBill()).map(([k,val]) => [k, money2(val)]),
-    ["Final total", money2(calcBill().total) + " · " + m + (v("last4") ? " ending " + v("last4") : "")],
-    ["Date", $("todayDate").textContent],
+    [tr("Services"), svcLabels(svcKeys(), lang).join(", ")],
+    [tr("Invoice #"), pendingId],
+    ...(v("service") ? [[tr("Notes"), v("service")]] : []),
+    ...billLines(calcBill(), lang).map(([k,val]) => [k, money2(val)]),
+    [tr("Final total"), money2(calcBill().total) + " · " + payText(m, v("last4"), lang)],
+    [tr("Date"), new Date().toLocaleDateString(lang === "es" ? "es-PR" : "en-US",{month:"long",day:"numeric",year:"numeric"})],
   ];
   const dl = $("jobSummary"); dl.innerHTML = "";
   rows.forEach(([k,val]) => { const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = val; dl.append(dt, dd); });
@@ -611,7 +766,7 @@ $("backToStaff").onclick = () => askPin(() => { unlocked = false; toStaff(); });
 
 /* ---------- submit ---------- */
 const resetPay = () => { renderTerms(); const c = $("t_payment"); if(c && c.value){ c.value = ""; c.closest(".term").classList.remove("initialed"); } };
-["tiresTotal","serviceTotal"].forEach(id => $(id).addEventListener("input", () => { drawBill(); resetPay(); }));
+["usedCount","usedTotal","newTireCount","newTotal","alignTotal","mechTotal","disposeCount","disposePrice"].forEach(id => $(id).addEventListener("input", () => { drawBill(); resetPay(); }));
 document.querySelectorAll('input[name="method"]').forEach(r => r.addEventListener("change", resetPay));
 $("custName").addEventListener("input", () => { if(!$("printName").dataset.touched) $("printName").value = $("custName").value; });
 $("printName").addEventListener("input", () => $("printName").dataset.touched = "1");
@@ -633,35 +788,35 @@ function drawSvcAuto(){
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
   const v = id => $(id).value.trim();
-  if(staffErrors().length){ toast("Job details are incomplete. Hand the tablet back to staff."); return; }
+  if(staffErrors().length){ toast(tr("Job details are incomplete. Hand the tablet back to staff.")); return; }
   const errs = [];
-  if(!v("custName")) errs.push("Enter your full name.");
-  if(!v("custPhone")) errs.push("Enter your phone number.");
+  if(!v("custName")) errs.push(tr("Enter your full name."));
+  if(!v("custPhone")) errs.push(tr("Enter your phone number."));
   const missing = [...$("terms").querySelectorAll("input")].filter(i => i.value.trim().length < 2);
-  if(missing.length) errs.push(`Initial every section in “Read & initial” (${missing.length} left).`);
-  if(!hasInk) errs.push("Sign in the signature box.");
-  if(!v("printName")) errs.push("Enter your printed name under the signature.");
-  if(showErrors("formErrors", "Please fix these before signing:", errs)) return;
+  if(missing.length) errs.push(lang === "es" ? `Escriba sus iniciales en cada sección de «Lea y escriba sus iniciales» (faltan ${missing.length}).` : `Initial every section in “Read & initial” (${missing.length} left).`);
+  if(!hasInk) errs.push(tr("Sign in the signature box."));
+  if(!v("printName")) errs.push(tr("Enter your printed name under the signature."));
+  if(showErrors("formErrors", tr("Please fix these before signing:"), errs)) return;
   const amt = parseFloat($("amount").value), m = methodVal();
-  if(!db){ toast("Storage isn't available on this device. Make sure the browser isn't in private mode."); return; }
+  if(!db){ toast(lang === "es" ? "No hay almacenamiento disponible en este dispositivo. Avise al personal." : "Storage isn't available on this device. Make sure the browser isn't in private mode."); return; }
 
-  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = "Saving…";
+  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = tr("Saving…");
   const t = terms(biz, amt, m);
   const id = pendingId;
   const now = new Date();
   const rec = {
     id, agreementVersion: AGREEMENT_VERSION,
-    signedAt: now.toISOString(), signedAtLocal: now.toLocaleString("en-US",{dateStyle:"full",timeStyle:"long"}),
+    signedAt: now.toISOString(), lang, signedAtLocal: now.toLocaleString(lang === "es" ? "es-PR" : "en-US",{dateStyle:"full",timeStyle:"long"}),
     business: { name: biz.name, address: biz.address, phone: biz.phone },
     customer: { name: v("custName"), phone: v("custPhone"), email: v("custEmail") },
     invoice: id,
     service: v("service"), amount: calcBill().total, bill: calcBill(), method: m, last4: v("last4"),
-    services: svcLabels(svcKeys()),
-    terms: t.map(x => ({ title:x.num + ". " + x.title, text:x.text, initials: $("t_"+x.key).value.trim().toUpperCase(), accepted:true })), docTitle: "Tire & Vehicle Service - Liability & Warranty Waiver", esign: esignText(biz),
+    services: svcLabels(svcKeys(), lang),
+    terms: t.map(x => ({ title:x.num + ". " + x.title, text:x.text, initials: $("t_"+x.key).value.trim().toUpperCase(), accepted:true })), docTitle: lang === "es" ? "Servicio de Gomas y Vehículos - Exención de Responsabilidad y Garantía" : "Tire & Vehicle Service - Liability & Warranty Waiver", esign: esignText(biz),
     printedName: v("printName"), signature: sigDataUrl(),
     photoId: null, photoData: null,
     device: navigator.userAgent, emailedTo: null,
-    search: [v("custName"), v("custPhone"), v("last4"), id, svcLabels(svcKeys()).join(" ")].join(" ").toLowerCase()
+    search: [v("custName"), v("custPhone"), v("last4"), id, svcLabels(svcKeys()).join(" "), svcLabels(svcKeys(), "es").join(" ")].join(" ").toLowerCase()
   };
   try{
     if(photoBlob){
@@ -679,13 +834,13 @@ $("form").addEventListener("submit", async e => {
     lastSaved = rec;
     showDone(rec);
   }catch(err){
-    const msg = err && err.code === "quota_exceeded" ? "Storage is full. Delete old test records in Records, then try again." : "Couldn't save. Check the internet connection and tap Sign & submit again.";
+    const msg = err && err.code === "quota_exceeded" ? "Storage is full. Delete old test records in Records, then try again." : tr("Couldn't save. Check the internet connection and tap Sign & submit again.");
     toast(msg);
-  }finally{ btn.disabled = false; btn.textContent = "Sign & submit"; }
+  }finally{ btn.disabled = false; btn.textContent = tr("Sign & submit"); }
 });
 
 function resetForm(){
-  $("form").reset(); $("printName").dataset.touched = ""; lastInitials = ""; drawBill();
+  $("form").reset(); $("printName").dataset.touched = ""; lastInitials = ""; lang = "en"; applyLang(); syncNewCount(); drawBill();
   ctx.clearRect(0,0,pad.width,pad.height); hasInk = false;
   photoBlob = null; $("photoPrev").hidden = true; $("removePhoto").hidden = true;
   $("formErrors").hidden = true; $("staffErrors").hidden = true; toStaff(); renderTerms(); setToday(); newJob(); drawSvcAuto(); window.scrollTo(0,0);
@@ -693,24 +848,24 @@ function resetForm(){
 $("resetForm").onclick = resetForm;
 
 /* ---------- done / email ---------- */
-function termLine(t,i){
+function termLine(t,i,l){
   const head = /^\d+\./.test(t.title) ? t.title : `${i+1}. ${t.title}`;
-  return `${head}${t.initials ? "  [Initials: " + t.initials + "]" : ""}\n${t.text}\n`;
+  return `${head}${t.initials ? "  [" + trL("Initials", l) + ": " + t.initials + "]" : ""}\n${t.text}\n`;
 }
 function copyText(r){
   return [
     `${r.business.name}`, `${r.business.address}`, `${r.business.phone}`, ``,
-    `${(r.docTitle || "Final Payment & Service Acceptance").toUpperCase()}`, `Agreement #: ${r.id}`, `Signed: ${r.signedAtLocal}`, ``,
-    `Customer: ${r.customer.name}  ·  ${r.customer.phone}`,
+    `${(r.docTitle || "Final Payment & Service Acceptance").toUpperCase()}`, `${trL("Agreement #: ", r.lang)}${r.id}`, `${trL("Signed: ", r.lang)}${r.signedAtLocal}`, ``,
+    `${trL("Customer", r.lang)}: ${r.customer.name}  ·  ${r.customer.phone}`,
     r.vehicle || r.plate ? `Vehicle: ${[r.vehicle, r.plate].filter(Boolean).join(" · ")}` : null,
-    r.invoice ? `Invoice #: ${r.invoice}` : null,
-    r.services ? `Services: ${r.services.join(", ")}` : null,
-    r.service ? `Notes: ${r.service}` : null,
-    ...(r.bill ? billLines(r.bill).map(([k,v]) => `${k}: $${v.toFixed(2)}`) : []),
-    `Final total paid: $${r.amount.toFixed(2)}  ·  ${r.method}${r.last4 ? " ending " + r.last4 : ""}`, ``,
-    `I agreed to the following:`,
-    ...r.terms.map((t,i) => termLine(t,i)), ``, r.esign, ``,
-    `Signed electronically by: ${r.printedName}`, r.shopRep ? `Shop representative: ${r.shopRep}` : null
+    r.invoice ? `${trL("Invoice #", r.lang)}: ${r.invoice}` : null,
+    r.services ? `${trL("Services", r.lang)}: ${r.services.join(", ")}` : null,
+    r.service ? `${trL("Notes", r.lang)}: ${r.service}` : null,
+    ...(r.bill ? billLines(r.bill, r.lang).map(([k,v]) => `${k}: $${v.toFixed(2)}`) : []),
+    `${trL("Final total paid", r.lang)}: $${r.amount.toFixed(2)}  ·  ${payText(r.method, r.last4, r.lang)}`, ``,
+    `${trL("I agreed to the following:", r.lang)}`,
+    ...r.terms.map((t,i) => termLine(t,i,r.lang)), ``, r.esign, ``,
+    `${trL("Signed electronically by:", r.lang)} ${r.printedName}`, r.shopRep ? `${trL("Shop representative", r.lang)}: ${r.shopRep}` : null
   ].filter(x => x !== null).join("\n");
 }
 function showDone(r){
@@ -718,16 +873,16 @@ function showDone(r){
   $("doneWhen").textContent = r.signedAtLocal;
   $("doneEmail").value = r.customer.email || "";
   $("copyText").value = copyText(r);
-  $("emailNote").hidden = true; $("emailBtn").textContent = "Email me a copy"; $("emailBtn").disabled = false;
+  $("emailNote").hidden = true; $("emailBtn").textContent = tr("Email me a copy"); $("emailBtn").disabled = false;
   show("screenDone");
 }
 $("emailBtn").onclick = async () => {
   const to = $("doneEmail").value.trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ toast("Enter a valid email address."); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){ toast(tr("Enter a valid email address.")); return; }
   const r = lastSaved, note = $("emailNote");
-  const href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(`Your signed agreement ${r.id} - ${r.business.name}`)}&body=${encodeURIComponent(copyText(r))}`;
+  const href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(`${trL("Your signed agreement", r.lang)} ${r.id} - ${r.business.name}`)}&body=${encodeURIComponent(copyText(r))}`;
   window.location.href = href;
-  note.textContent = "Your email app should open with the copy ready. Tap Send to deliver it.";
+  note.textContent = tr("Your email app should open with the copy ready. Tap Send to deliver it.");
   note.style.color = "var(--ok)"; note.hidden = false;
   try{ await db.collection("agreements").doc(r.id).update({ emailedTo: to, emailOfferedAt: new Date().toISOString() }); }catch(_){}
 };
@@ -745,8 +900,8 @@ ${r.terms.map(t => `<div style="border:1px solid #ddd;padding:10px 12px;margin-b
 <p style="color:#555">Questions? Call us at ${e(r.business.phone)}.</p></div>`;
 }
 $("copyBtn").onclick = async () => {
-  try{ await navigator.clipboard.writeText($("copyText").value); toast("Copied"); }
-  catch{ $("copyText").select(); toast("Text selected. Use your device's Copy."); }
+  try{ await navigator.clipboard.writeText($("copyText").value); toast(tr("Copied")); }
+  catch{ $("copyText").select(); toast(tr("Text selected. Use your device's Copy.")); }
 };
 $("nextCustomer").onclick = () => { resetForm(); show("screenForm"); };
 
@@ -830,7 +985,7 @@ function openDetail(r){
   body.appendChild(h);
   const dl = document.createElement("dl"); dl.className = "kv"; dl.style.margin = "0";
   const rows = [
-    ["Agreement #", r.id, true], ["Signed", r.signedAtLocal], ["Phone", r.customer?.phone], ["Email", r.customer?.email],
+    ["Agreement #", r.id, true], ["Signed", r.signedAtLocal], ["Language", r.lang === "es" ? "Español (Spanish)" : ""], ["Phone", r.customer?.phone], ["Email", r.customer?.email],
     ["Vehicle", [r.vehicle, r.plate].filter(Boolean).join(" · ")], ["Invoice #", r.invoice], ["Services", (r.services||[]).join(", ")], ["Notes", r.service], ["Shop representative", r.shopRep],
     ...(r.bill ? billLines(r.bill).map(([k,v]) => [k, money(v), true]) : []), ["Final total", money(r.amount), true], ["Payment", r.method + (r.last4 ? " ending " + r.last4 : "")],
     ["Copy emailed to", r.emailedTo ? `${r.emailedTo} (email opened ${fmtShort(r.emailSentAt || r.emailOfferedAt)})` : "Not sent"],
@@ -909,7 +1064,7 @@ $("delYes").onclick = async () => {
 
 /* ---------- settings ---------- */
 function openSettings(){
-  $("setName").value = biz.name; $("setPhone").value = biz.phone; $("setAddr").value = biz.address; $("setPin").value = ""; $("setTax").value = biz.taxRate; $("setFeePct").value = biz.feePct; $("setFeeFixed").value = biz.feeFixed;
+  $("setName").value = biz.name; $("setPhone").value = biz.phone; $("setAddr").value = biz.address; $("setPin").value = ""; $("setTax").value = biz.taxRate; $("setTireFee").value = biz.tireFee != null ? biz.tireFee : DEFAULTS.tireFee; $("setFeePct").value = biz.feePct; $("setFeeFixed").value = biz.feeFixed;
   show("screenSettings");
 }
 $("setCancel").onclick = () => show("screenForm");
@@ -919,7 +1074,7 @@ $("settingsForm").addEventListener("submit", async e => {
   const pin = $("setPin").value.trim();
   if(pin && !/^\d{4,8}$/.test(pin)){ toast("PIN must be 4 to 8 digits."); return; }
   const next = { name: $("setName").value.trim() || DEFAULTS.name, phone: $("setPhone").value.trim(), address: $("setAddr").value.trim(), pin: pin || biz.pin,
-    taxRate: numOr($("setTax").value, DEFAULTS.taxRate), feePct: numOr($("setFeePct").value, DEFAULTS.feePct), feeFixed: numOr($("setFeeFixed").value, DEFAULTS.feeFixed) };
+    taxRate: numOr($("setTax").value, DEFAULTS.taxRate), tireFee: numOr($("setTireFee").value, DEFAULTS.tireFee), feePct: numOr($("setFeePct").value, DEFAULTS.feePct), feeFixed: numOr($("setFeeFixed").value, DEFAULTS.feeFixed) };
   if(!db){ toast("Settings can't be saved here."); return; }
   try{ await db.doc("config/business").set(next); biz = next; applyBiz(); toast("Settings saved"); show("screenForm"); }
   catch{ toast("Couldn't save settings. Try again."); }
@@ -931,7 +1086,8 @@ function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false
 
 /* ---------- boot ---------- */
 function setToday(){ $("todayDate").textContent = new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}); }
-applyBiz(); sizePad(); setToday(); newJob();
+document.querySelectorAll(".langsw button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+applyBiz(); applyLang(); sizePad(); setToday(); newJob();
 /* ---------- local storage (IndexedDB) ---------- */
 function makeLocalDB(){
   const open = new Promise((res, rej) => {
@@ -1014,9 +1170,9 @@ $("backupBtn").onclick = async () => {
 $("csvBtn").onclick = async () => {
   if(!db) return;
   const q = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
-  const head = ["Invoice #","Signed","Customer","Phone","Email","Services","Notes","Tires","Service","Sales tax","Card fee","Final total","Payment","Card last 4","Emailed to"];
+  const head = ["Invoice #","Signed","Customer","Phone","Email","Services","Notes","Tires","FL tire fee","Disposal","Service","Sales tax","Card fee","Final total","Payment","Card last 4","Emailed to"];
   const rows = (await allAgreements()).map(r => [r.id, r.signedAtLocal, r.customer?.name, r.customer?.phone, r.customer?.email, (r.services||[]).join("; "), r.service,
-    r.bill?.tires, r.bill?.service, r.bill?.tax, r.bill?.fee, r.amount, r.method, r.last4, r.emailedTo].map(q).join(","));
+    r.bill?.tires, r.bill?.flFee ?? 0, r.bill?.disposeFee ?? 0, r.bill?.service, r.bill?.tax, r.bill?.fee, r.amount, r.method, r.last4, r.emailedTo].map(q).join(","));
   await downloads.save({ filename: `TireSpot-SignOff-records-${stamp()}.csv`, data: [head.map(q).join(","), ...rows].join("\r\n") });
   toast("Spreadsheet saved to Downloads.");
 };
