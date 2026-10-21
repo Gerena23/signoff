@@ -105,6 +105,8 @@ textarea{min-height:96px;resize:vertical}
 .term.autofilled .ini input{box-shadow:0 0 0 4px var(--ok-soft)}
 .backup-bar{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .backup-bar.stale{border-color:var(--accent);background:var(--accent-soft)}
+.terms,.term{overflow-anchor:none}
+.term input{scroll-margin:0}
 .langsw{display:inline-flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
 .langsw button{min-height:44px;padding:0 16px;border:0;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 .langsw button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
@@ -556,6 +558,11 @@ function renderTerms(){
     inp.addEventListener("pointerdown", e => {
       if(inp.value.trim() || !lastInitials) return;
       e.preventDefault();
+      // The previous box can still hold focus. When the keyboard closes the browser scrolls back to it. Drop focus and hold the page where it is.
+      const y = window.scrollY, ae = document.activeElement;
+      if(ae && ae !== document.body && ae.blur) ae.blur();
+      const hold = () => { if(Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y); };
+      requestAnimationFrame(hold); [120, 300, 600].forEach(ms => setTimeout(hold, ms));
       inp.value = lastInitials; mark();
       card.classList.add("autofilled"); setTimeout(() => card.classList.remove("autofilled"), 600);
     });

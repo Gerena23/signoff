@@ -1,5 +1,5 @@
 // Tire Spot Sign-Off: offline support. Bump VERSION when you upload new files.
-const VERSION = "signoff-v8";
+const VERSION = "signoff-v9";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
