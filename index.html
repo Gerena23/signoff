@@ -106,6 +106,9 @@ textarea{min-height:96px;resize:vertical}
 .backup-bar{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .backup-bar.stale{border-color:var(--accent);background:var(--accent-soft)}
 .terms,.term{overflow-anchor:none}
+.cam-note{text-align:center;margin:0}
+.deposit-policy{border:2px solid var(--accent);border-radius:8px;padding:12px 16px;display:grid;gap:6px;background:var(--bg)}
+.deposit-policy p{margin:0}
 .term input{scroll-margin:0}
 .langsw{display:inline-flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
 .langsw button{min-height:44px;padding:0 16px;border:0;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
@@ -200,11 +203,19 @@ textarea{min-height:96px;resize:vertical}
         <label class="f">Notes (optional)<textarea id="service" placeholder="Tire size, quantity, anything else. Example: 2 tires 225/45R17"></textarea></label>
         <p class="fine">Enter the quantity and amount for each service you picked above.</p>
         <div class="stack" id="amtBoxes">
-          <div class="grid" id="usedBox" hidden><label class="f"><span>Number of used tires <span class="req">*</span></span><input type="number" id="usedCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>Used tires total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="usedTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
-          <div class="grid" id="newCountBox" hidden><label class="f"><span>Number of new tires <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0" id="flFeeHint"></span></span><input type="number" id="newTireCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>New tires total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="newTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+          <div class="grid" id="usedBox" hidden><label class="f"><span>Number of used tires <span class="req">*</span></span><input type="number" id="usedCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>Price per used tire <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="usedPrice" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+          <div class="grid" id="newCountBox" hidden><label class="f"><span>Number of new tires <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0" id="flFeeHint"></span></span><input type="number" id="newTireCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>Price per new tire <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(taxed)</span></span><div class="money"><span>$</span><input type="number" id="newPrice" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
           <div class="grid" id="alignBox" hidden><label class="f"><span>Alignment total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="alignTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
           <div class="grid" id="mechBox" hidden><label class="f"><span>Vehicle service total <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="mechTotal" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
           <div class="grid" id="disposeBox" hidden><label class="f"><span>Tires left for disposal <span class="req">*</span></span><input type="number" id="disposeCount" inputmode="numeric" step="1" min="1" max="99" placeholder="Example: 4"></label><label class="f"><span>Disposal price per tire <span class="req">*</span> <span class="fine" style="text-transform:none;letter-spacing:0">(not taxed)</span></span><div class="money"><span>$</span><input type="number" id="disposePrice" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label></div>
+        </div>
+        <label class="f"><span>Deposit already paid <span class="fine" style="text-transform:none;letter-spacing:0">(optional, comes off the total)</span></span><div class="money"><span>$</span><input type="number" id="deposit" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div></label>
+        <div class="deposit-policy" id="depositPolicy" hidden>
+          <b>Deposit Policy - New Tire Orders (Non-Refundable)</b>
+          <p>A deposit is required to order new tires. Because your tires are ordered specifically for your vehicle, all deposits are non-refundable and non-transferable. Your deposit will be applied to your total when your tires are installed.</p>
+          <p>If you cancel your order, or if your tires are not picked up within 7 days of being notified they are ready, your deposit is forfeited and your tires may be returned to stock or sold.</p>
+          <p>Exception: if The Tire Spot cannot obtain your tires or cancels your order, your deposit will be refunded in full.</p>
+          <p class="fine" style="margin:0">The customer reads and initials this policy on their screen.</p>
         </div>
         <input type="hidden" id="amount">
         <div class="bill" id="bill" aria-live="polite"></div>
@@ -280,6 +291,8 @@ textarea{min-height:96px;resize:vertical}
         </div>
       </section>
 
+      <p class="fine cam-note" data-i18n>When you tap Sign &amp; submit, the tablet's front camera takes a photo of you. It's kept with this signed record.</p>
+      <video id="selfieCam" playsinline muted autoplay aria-hidden="true" style="position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none"></video>
       <div id="formErrors" class="errors" hidden></div>
       <div class="submit-bar">
         <button type="button" class="btn-quiet" id="backToStaff" data-i18n>Back to staff (PIN)</button>
@@ -416,6 +429,7 @@ const ES_UI = {
   "Email me a copy":"Envíeme una copia","Email for your copy":"Correo electrónico para su copia",
   "Show the copy as text":"Mostrar la copia como texto","Copy text":"Copiar texto",
   "Initials":"Iniciales",
+  "When you tap Sign & submit, the tablet's front camera takes a photo of you. It's kept with this signed record.":"Al tocar Firmar y enviar, la cámara frontal de la tableta le tomará una foto. La foto se guarda con este registro firmado.",
   "Please fix these before signing:":"Corrija lo siguiente antes de firmar:",
   "Enter your full name.":"Escriba su nombre completo.","Enter your phone number.":"Escriba su número de teléfono.",
   "Sign in the signature box.":"Firme en el recuadro de firma.",
@@ -426,7 +440,7 @@ const ES_UI = {
   "Your email app should open with the copy ready. Tap Send to deliver it.":"Su aplicación de correo se abrirá con la copia lista. Toque Enviar.",
   "Copied":"Copiado","Text selected. Use your device's Copy.":"Texto seleccionado. Use la opción Copiar de su dispositivo.",
   "Services":"Servicios","Invoice #":"Factura #","Notes":"Notas","Final total":"Total final","Date":"Fecha",
-  "Customer":"Cliente","Agreement #: ":"Acuerdo #: ","Signed: ":"Firmado: ","Final total paid":"Total final pagado",
+  "Customer":"Cliente","Charged today":"Cargo de hoy","Agreement #: ":"Acuerdo #: ","Signed: ":"Firmado: ","Final total paid":"Total final pagado",
   "I agreed to the following:":"Acepté lo siguiente:","Signed electronically by:":"Firmado electrónicamente por:",
   "Shop representative":"Representante del taller","Your signed agreement":"Su acuerdo firmado",
   "the total shown above":"el total indicado arriba",
@@ -488,12 +502,17 @@ function terms(b, amount, method, keys){
       intro:"By signing below, I release the shop and its employees from any liability related to:",
       bullets:["Tire Failure","Vehicle Damage","Accidents","Steering or Handling Issues","Suspension Problems","Alignment Results","Any Losses that Occurred After Service"],
       outro:"I understand that vehicle condition, tire longevity, and performance depend on driving habits, road conditions, vehicle maintenance, and proper inflation, all of which are my responsibility." },
+    { key:"deposit", title:"Deposit Policy - New Tire Orders (Non-Refundable)",
+      intro:"A deposit is required to order new tires. Because your tires are ordered specifically for your vehicle, all deposits are non-refundable and non-transferable. Your deposit will be applied to your total when your tires are installed.",
+      bullets:["If you cancel your order, or if your tires are not picked up within 7 days of being notified they are ready, your deposit is forfeited and your tires may be returned to stock or sold.","Exception: if The Tire Spot cannot obtain your tires or cancels your order, your deposit will be refunded in full."],
+      outro:"By paying this deposit, you acknowledge and agree to this policy." },
     { key:"payment", title:"Payment Authorization & Final Sale",
       intro:"I agree that:",
       bullets:[`I authorize the charge of ${amt}${(keys && keys.length) ? " for " + svcLabels(keys).join(", ") : ""} as final payment in full${method ? " by " + method.toLowerCase().replace(" - ", " (") + (method.includes(" - ") ? ")" : "") : ""}. I made this purchase and the charge is valid.`,"All sales and services are final. No refunds are given once the service is complete.",`If I have a problem with the work, I will contact ${b.name} at ${b.phone} and give the shop a chance to address it before I contact my bank or card company.`],
       outro:"" },
   ];
   const want = new Set(ALWAYS);
+  if(calcBill().deposit > 0) want.add("deposit");
   SERVICES.forEach(x => { if(keys.includes(x.key)) want.add(x.adds); });
   if(lang === "es"){
     const nm = b.name, ph = b.phone;
@@ -522,12 +541,27 @@ function terms(b, amount, method, keys){
         intro:"Al firmar abajo, relevo al taller y a sus empleados de toda responsabilidad relacionada con:",
         bullets:["Falla de las gomas","Daños al vehículo","Accidentes","Problemas de dirección o de manejo","Problemas de suspensión","Resultados de la alineación","Cualquier pérdida ocurrida después del servicio"],
         outro:"Entiendo que la condición del vehículo, la duración de las gomas y su rendimiento dependen de los hábitos de manejo, las condiciones de la carretera, el mantenimiento del vehículo y el inflado adecuado, todo lo cual es responsabilidad mía." },
+      deposit:{ title:"Política de Depósito - Pedidos de Gomas Nuevas (No Reembolsable)",
+        intro:"Se requiere un depósito para ordenar gomas nuevas. Como sus gomas se ordenan específicamente para su vehículo, todos los depósitos son no reembolsables y no transferibles. Su depósito se aplicará a su total cuando se instalen sus gomas.",
+        bullets:["Si cancela su orden, o si no recoge sus gomas dentro de 7 días después de que se le notifique que están listas, perderá su depósito y sus gomas podrían devolverse al inventario o venderse.","Excepción: si The Tire Spot no puede conseguir sus gomas o cancela su orden, se le devolverá el depósito completo."],
+        outro:"Al pagar este depósito, usted reconoce y acepta esta política." },
       payment:{ title:"Autorización de Pago y Venta Final",
         intro:"Acepto que:",
         bullets:[`Autorizo el cargo de ${amount ? "$" + Number(amount).toFixed(2) : "el total indicado arriba"}${(keys && keys.length) ? " por " + svcLabels(keys, "es").join(", ") : ""} como pago final completo${method ? " con " + (METHOD_ES[method] || method).toLowerCase().replace(" - ", " (") + (method.includes(" - ") ? ")" : "") : ""}. Realicé esta compra y el cargo es válido.`,"Todas las ventas y servicios son finales. No se hacen reembolsos una vez completado el servicio.",`Si tengo algún problema con el trabajo, me comunicaré con ${nm} al ${ph} y le daré al taller la oportunidad de atenderlo antes de comunicarme con mi banco o con la compañía de mi tarjeta.`],
         outro:"" },
     };
     list.forEach(t => { if(es[t.key]) Object.assign(t, es[t.key]); });
+  }
+  { const bl = calcBill();
+    if(bl.deposit > 0){
+      const pm = list.find(t => t.key === "payment"), mm = x => "$" + Number(x).toFixed(2);
+      const grand = mm(bl.deposit + bl.total), dep = mm(bl.deposit), today = amount ? mm(amount) : mm(bl.total);
+      const es = lang === "es", labs = (keys && keys.length) ? svcLabels(keys, es ? "es" : "en").join(", ") : "";
+      const mth = method ? ((es ? (METHOD_ES[method] || method) : method).toLowerCase().replace(" - ", " (") + (method.includes(" - ") ? ")" : "")) : "";
+      pm.bullets[0] = es
+        ? `Acepto un total de ${grand}${labs ? " por " + labs : ""}, con un depósito de ${dep} ya pagado, y autorizo el cargo de hoy de ${today} como pago final completo${mth ? " con " + mth : ""}. Realicé esta compra y el cargo es válido.`
+        : `I agree to a total of ${grand}${labs ? " for " + labs : ""}, with a ${dep} deposit already paid, and I authorize today's charge of ${today} as final payment in full${mth ? " by " + mth : ""}. I made this purchase and the charge is valid.`;
+    }
   }
   const out = list.filter(t => want.has(t.key));
   out.forEach((t,i) => { t.num = i + 1; t.text = [t.intro, ...t.bullets.map(x => "• " + x), t.outro].filter(Boolean).join("\n"); });
@@ -578,8 +612,8 @@ function calcBill(){
   const keys = svcKeys(), has = k => keys.includes(k);
   const gi = id => Math.max(0, Math.floor(parseFloat($(id).value) || 0));
   const mv = id => r2(parseFloat($(id).value) || 0);
-  const usedCount = has("used") ? gi("usedCount") : 0, usedTotal = has("used") ? mv("usedTotal") : 0;
-  const tireCount = has("new") ? gi("newTireCount") : 0, newTotal = has("new") ? mv("newTotal") : 0;
+  const usedCount = has("used") ? gi("usedCount") : 0, usedPrice = has("used") ? mv("usedPrice") : 0, usedTotal = r2(usedCount * usedPrice);
+  const tireCount = has("new") ? gi("newTireCount") : 0, newPrice = has("new") ? mv("newPrice") : 0, newTotal = r2(tireCount * newPrice);
   const alignTotal = has("align") ? mv("alignTotal") : 0, mechTotal = has("mech") ? mv("mechTotal") : 0;
   const tires = r2(usedTotal + newTotal), service = r2(alignTotal + mechTotal);
   const tireFee = biz.tireFee != null ? Number(biz.tireFee) || 0 : DEFAULTS.tireFee;
@@ -589,24 +623,34 @@ function calcBill(){
   const disposeFee = r2(disposeCount * disposePrice);
   const subtotal = r2(tires + flFee + service + disposeFee);
   const tax = r2((tires + flFee) * (Number(biz.taxRate) || 0) / 100);
-  const fee = subtotal > 0 ? r2((subtotal + tax) * (Number(biz.feePct) || 0) / 100 + (Number(biz.feeFixed) || 0)) : 0;
-  const total = r2(subtotal + tax + fee);
-  return { ver:2, usedCount, usedTotal, tireCount, newTotal, alignTotal, mechTotal, tires, tireFee, flFee, disposeCount, disposePrice, disposeFee, service, subtotal, tax, fee, total, taxRate: Number(biz.taxRate) || 0, feePct: Number(biz.feePct) || 0, feeFixed: Number(biz.feeFixed) || 0 };
+  const saleTotal = r2(subtotal + tax);
+  const depositIn = mv("deposit");
+  const deposit = Math.min(depositIn, saleTotal);
+  const balance = r2(saleTotal - deposit);
+  const fee = balance > 0 ? r2(balance * (Number(biz.feePct) || 0) / 100 + (Number(biz.feeFixed) || 0)) : 0;
+  const total = r2(balance + fee);
+  return { ver:2, saleTotal, depositIn, deposit, balance, usedCount, usedPrice, usedTotal, tireCount, newPrice, newTotal, alignTotal, mechTotal, tires, tireFee, flFee, disposeCount, disposePrice, disposeFee, service, subtotal, tax, fee, total, taxRate: Number(biz.taxRate) || 0, feePct: Number(biz.feePct) || 0, feeFixed: Number(biz.feeFixed) || 0 };
 }
 function billLines(b, l){
   if(b.ver !== 2) return billLinesLegacy(b, l);
   const es = l === "es", m = x => Number(x).toFixed(2), hasFl = Number(b.flFee) > 0;
   const n1 = (n, one, many) => n === 1 ? one : many;
   const out = [];
-  if(b.usedCount > 0 || b.usedTotal > 0) out.push([es ? `${b.usedCount} ${n1(b.usedCount,"goma usada","gomas usadas")}` : `${b.usedCount} used ${n1(b.usedCount,"tire","tires")}`, b.usedTotal]);
-  if(b.tireCount > 0 || b.newTotal > 0) out.push([es ? `${b.tireCount} ${n1(b.tireCount,"goma nueva","gomas nuevas")}` : `${b.tireCount} new ${n1(b.tireCount,"tire","tires")}`, b.newTotal]);
+  if(b.usedCount > 0 || b.usedTotal > 0) out.push([(es ? `${b.usedCount} ${n1(b.usedCount,"goma usada","gomas usadas")}` : `${b.usedCount} used ${n1(b.usedCount,"tire","tires")}`) + (b.usedPrice > 0 ? ` (${b.usedCount} × $${m(b.usedPrice)})` : ""), b.usedTotal]);
+  if(b.tireCount > 0 || b.newTotal > 0) out.push([(es ? `${b.tireCount} ${n1(b.tireCount,"goma nueva","gomas nuevas")}` : `${b.tireCount} new ${n1(b.tireCount,"tire","tires")}`) + (b.newPrice > 0 ? ` (${b.tireCount} × $${m(b.newPrice)})` : ""), b.newTotal]);
   if(hasFl) out.push([es ? `Cargo de la Florida por gomas nuevas (${b.tireCount} × $${m(b.tireFee)})` : `FL new tire fee (${b.tireCount} × $${m(b.tireFee)})`, b.flFee]);
   if(b.alignTotal > 0) out.push([es ? "Alineación" : "Alignment", b.alignTotal]);
   if(b.mechTotal > 0) out.push([es ? "Servicio al vehículo" : "Vehicle service", b.mechTotal]);
   if(b.disposeFee > 0) out.push([es ? `Disposición de ${b.disposeCount} ${n1(b.disposeCount,"goma","gomas")} (${b.disposeCount} × $${m(b.disposePrice)}, sin impuesto)` : `Disposed of ${b.disposeCount} ${n1(b.disposeCount,"tire","tires")} (${b.disposeCount} × $${m(b.disposePrice)}, no tax)`, b.disposeFee]);
   out.push(["Subtotal", b.subtotal]);
   out.push([es ? `Impuesto sobre ventas (${b.taxRate}% sobre gomas${hasFl ? " + cargo de la Florida" : ""})` : `Sales tax (${b.taxRate}% on tires${hasFl ? " + FL fee" : ""})`, b.tax]);
-  out.push([es ? `Cargo de tarjeta Square (${b.feePct}% + $${m(b.feeFixed)})` : `Square card fee (${b.feePct}% + $${m(b.feeFixed)})`, b.fee]);
+  const dep = Number(b.deposit) > 0;
+  if(dep){
+    out.push([es ? "Total antes del depósito" : "Total before deposit", b.saleTotal]);
+    out.push([es ? "Depósito ya pagado" : "Deposit already paid", -b.deposit]);
+    out.push([es ? "Balance de hoy" : "Balance due today", b.balance]);
+  }
+  out.push([es ? `Cargo de tarjeta Square (${b.feePct}% + $${m(b.feeFixed)}${dep ? " sobre el balance de hoy" : ""})` : `Square card fee (${b.feePct}% + $${m(b.feeFixed)}${dep ? " on today's balance" : ""})`, b.fee]);
   return out;
 }
 function billLinesLegacy(b, l){
@@ -638,8 +682,8 @@ function drawBill(){
   const b = calcBill();
   $("amount").value = b.total > 0 ? b.total.toFixed(2) : "";
   const box = $("bill"); box.innerHTML = "";
-  billLines(b).forEach(([k,v]) => { const d = document.createElement("div"); d.className = "ln"; d.innerHTML = "<span></span><span></span>"; d.children[0].textContent = k; d.children[1].textContent = "$" + v.toFixed(2); box.appendChild(d); });
-  const g = document.createElement("div"); g.className = "ln grand"; g.innerHTML = "<span>Final total</span><span></span>"; g.children[1].textContent = "$" + b.total.toFixed(2); box.appendChild(g);
+  billLines(b).forEach(([k,v]) => { const d = document.createElement("div"); d.className = "ln"; d.innerHTML = "<span></span><span></span>"; d.children[0].textContent = k; d.children[1].textContent = money2(v); box.appendChild(d); });
+  const g = document.createElement("div"); g.className = "ln grand"; g.innerHTML = "<span></span><span></span>"; g.children[0].textContent = b.deposit > 0 ? "Charged today" : "Final total"; g.children[1].textContent = money2(b.total); $("depositPolicy").hidden = !(b.depositIn > 0); box.appendChild(g);
 }
 const methodVal = () => (document.querySelector('input[name="method"]:checked')||{}).value || "";
 
@@ -711,12 +755,12 @@ SERVICES.forEach(x => {
 });
 function syncNewCount(){
   const keys = svcKeys();
-  [["used","usedBox",["usedCount","usedTotal"]],["new","newCountBox",["newTireCount","newTotal"]],["align","alignBox",["alignTotal"]],["mech","mechBox",["mechTotal"]],["dispose","disposeBox",["disposeCount","disposePrice"]]]
+  [["used","usedBox",["usedCount","usedPrice"]],["new","newCountBox",["newTireCount","newPrice"]],["align","alignBox",["alignTotal"]],["mech","mechBox",["mechTotal"]],["dispose","disposeBox",["disposeCount","disposePrice"]]]
     .forEach(([k, box, ids]) => { const on = keys.includes(k); $(box).hidden = !on; if(!on) ids.forEach(id => $(id).value = ""); });
   const fee = biz.tireFee != null ? Number(biz.tireFee) || 0 : DEFAULTS.tireFee;
   $("flFeeHint").textContent = `(FL fee $${fee.toFixed(2)} per new tire is added)`;
 }
-const money2 = n => "$" + Number(n||0).toFixed(2);
+const money2 = n => (Number(n) < 0 ? "−$" : "$") + Math.abs(Number(n||0)).toFixed(2);
 function showErrors(boxId, title, errs){
   const box = $(boxId);
   if(!errs.length){ box.hidden = true; return false; }
@@ -733,11 +777,12 @@ function staffErrors(){
     if(!(calcBill().disposePrice > 0)) errs.push("Enter the disposal price per tire.");
   }
   { const c = calcBill(), k = svcKeys();
-    if(k.includes("used")){ if(!(c.usedCount >= 1)) errs.push("Enter the number of used tires."); if(!(c.usedTotal > 0)) errs.push("Enter the used tires total."); }
-    if(k.includes("new")){ if(!(c.tireCount >= 1)) errs.push("Enter the number of new tires."); if(!(c.newTotal > 0)) errs.push("Enter the new tires total."); }
+    if(k.includes("used")){ if(!(c.usedCount >= 1)) errs.push("Enter the number of used tires."); if(!(c.usedPrice > 0)) errs.push("Enter the price per used tire."); }
+    if(k.includes("new")){ if(!(c.tireCount >= 1)) errs.push("Enter the number of new tires."); if(!(c.newPrice > 0)) errs.push("Enter the price per new tire."); }
     if(k.includes("align") && !(c.alignTotal > 0)) errs.push("Enter the alignment total.");
     if(k.includes("mech") && !(c.mechTotal > 0)) errs.push("Enter the vehicle service total.");
-    if(!(c.subtotal > 0)) errs.push("Enter the amount for each service."); }
+    if(!(c.subtotal > 0)) errs.push("Enter the amount for each service.");
+    if(c.depositIn > c.saleTotal && c.saleTotal > 0) errs.push("The deposit can't be more than the total."); }
   const m = methodVal();
   if(!m) errs.push("Pick a payment method.");
   if(!/^\d{4}$/.test(v("last4"))) errs.push("Enter the last 4 digits of the card.");
@@ -750,19 +795,48 @@ function fillSummary(){
     [tr("Invoice #"), pendingId],
     ...(v("service") ? [[tr("Notes"), v("service")]] : []),
     ...billLines(calcBill(), lang).map(([k,val]) => [k, money2(val)]),
-    [tr("Final total"), money2(calcBill().total) + " · " + payText(m, v("last4"), lang)],
+    [calcBill().deposit > 0 ? tr("Charged today") : tr("Final total"), money2(calcBill().total) + " · " + payText(m, v("last4"), lang)],
     [tr("Date"), new Date().toLocaleDateString(lang === "es" ? "es-PR" : "en-US",{month:"long",day:"numeric",year:"numeric"})],
   ];
   const dl = $("jobSummary"); dl.innerHTML = "";
   rows.forEach(([k,val]) => { const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = val; dl.append(dt, dd); });
 }
+/* ---------- front camera photo at signing ---------- */
+let camStream = null, camStarting = null;
+function startCam(){
+  if(camStream) return Promise.resolve(true);
+  if(camStarting) return camStarting;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(false);
+  camStarting = navigator.mediaDevices.getUserMedia({ video:{ facingMode:"user", width:{ideal:1280}, height:{ideal:960} }, audio:false })
+    .then(async st => { camStream = st; const v = $("selfieCam"); v.srcObject = st; try{ await v.play(); }catch(_){} return true; })
+    .catch(() => false)
+    .finally(() => { camStarting = null; });
+  return camStarting;
+}
+function stopCam(){
+  if(camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  $("selfieCam").srcObject = null;
+}
+async function snapSelfie(){
+  try{
+    if(!camStream){ await Promise.race([startCam(), new Promise(r => setTimeout(r, 2000))]); }
+    const v = $("selfieCam");
+    for(let i = 0; i < 20 && camStream && !v.videoWidth; i++) await new Promise(r => setTimeout(r, 100));
+    if(!camStream || !v.videoWidth) return null;
+    const s = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
+    const c = document.createElement("canvas"); c.width = Math.round(v.videoWidth * s); c.height = Math.round(v.videoHeight * s);
+    c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+    return c.toDataURL("image/jpeg", 0.75);
+  }catch(_){ return null; }
+}
 function toCustomer(){
-  renderTerms(); fillSummary();
+  renderTerms(); fillSummary(); startCam();
   $("staffPart").hidden = true; $("custPart").hidden = false;
   $("formErrors").hidden = true;
   window.scrollTo(0,0); requestAnimationFrame(sizePad);
 }
 function toStaff(){
+  stopCam();
   $("custPart").hidden = true; $("staffPart").hidden = false; window.scrollTo(0,0);
 }
 $("handoffBtn").onclick = () => {
@@ -773,7 +847,7 @@ $("backToStaff").onclick = () => askPin(() => { unlocked = false; toStaff(); });
 
 /* ---------- submit ---------- */
 const resetPay = () => { renderTerms(); const c = $("t_payment"); if(c && c.value){ c.value = ""; c.closest(".term").classList.remove("initialed"); } };
-["usedCount","usedTotal","newTireCount","newTotal","alignTotal","mechTotal","disposeCount","disposePrice"].forEach(id => $(id).addEventListener("input", () => { drawBill(); resetPay(); }));
+["usedCount","usedPrice","newTireCount","newPrice","alignTotal","mechTotal","disposeCount","disposePrice","deposit"].forEach(id => $(id).addEventListener("input", () => { drawBill(); resetPay(); }));
 document.querySelectorAll('input[name="method"]').forEach(r => r.addEventListener("change", resetPay));
 $("custName").addEventListener("input", () => { if(!$("printName").dataset.touched) $("printName").value = $("custName").value; });
 $("printName").addEventListener("input", () => $("printName").dataset.touched = "1");
@@ -794,6 +868,8 @@ function drawSvcAuto(){
 
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
+  const signerPhotoAt = new Date().toISOString();
+  const signerPhoto = await snapSelfie();
   const v = id => $(id).value.trim();
   if(staffErrors().length){ toast(tr("Job details are incomplete. Hand the tablet back to staff.")); return; }
   const errs = [];
@@ -821,7 +897,7 @@ $("form").addEventListener("submit", async e => {
     services: svcLabels(svcKeys(), lang),
     terms: t.map(x => ({ title:x.num + ". " + x.title, text:x.text, initials: $("t_"+x.key).value.trim().toUpperCase(), accepted:true })), docTitle: lang === "es" ? "Servicio de Gomas y Vehículos - Exención de Responsabilidad y Garantía" : "Tire & Vehicle Service - Liability & Warranty Waiver", esign: esignText(biz),
     printedName: v("printName"), signature: sigDataUrl(),
-    photoId: null, photoData: null,
+    photoId: null, photoData: null, signerPhotoData: signerPhoto, signerPhotoAt: signerPhoto ? signerPhotoAt : null,
     device: navigator.userAgent, emailedTo: null,
     search: [v("custName"), v("custPhone"), v("last4"), id, svcLabels(svcKeys()).join(" "), svcLabels(svcKeys(), "es").join(" ")].join(" ").toLowerCase()
   };
@@ -839,6 +915,7 @@ $("form").addEventListener("submit", async e => {
     }
     await db.collection("agreements").doc(id).set(rec);
     lastSaved = rec;
+    stopCam();
     showDone(rec);
   }catch(err){
     const msg = err && err.code === "quota_exceeded" ? "Storage is full. Delete old test records in Records, then try again." : tr("Couldn't save. Check the internet connection and tap Sign & submit again.");
@@ -847,6 +924,7 @@ $("form").addEventListener("submit", async e => {
 });
 
 function resetForm(){
+  stopCam();
   $("form").reset(); $("printName").dataset.touched = ""; lastInitials = ""; lang = "en"; applyLang(); syncNewCount(); drawBill();
   ctx.clearRect(0,0,pad.width,pad.height); hasInk = false;
   photoBlob = null; $("photoPrev").hidden = true; $("removePhoto").hidden = true;
@@ -868,8 +946,8 @@ function copyText(r){
     r.invoice ? `${trL("Invoice #", r.lang)}: ${r.invoice}` : null,
     r.services ? `${trL("Services", r.lang)}: ${r.services.join(", ")}` : null,
     r.service ? `${trL("Notes", r.lang)}: ${r.service}` : null,
-    ...(r.bill ? billLines(r.bill, r.lang).map(([k,v]) => `${k}: $${v.toFixed(2)}`) : []),
-    `${trL("Final total paid", r.lang)}: $${r.amount.toFixed(2)}  ·  ${payText(r.method, r.last4, r.lang)}`, ``,
+    ...(r.bill ? billLines(r.bill, r.lang).map(([k,v]) => `${k}: ${money2(v)}`) : []),
+    `${trL(r.bill?.deposit > 0 ? "Charged today" : "Final total paid", r.lang)}: $${r.amount.toFixed(2)}  ·  ${payText(r.method, r.last4, r.lang)}`, ``,
     `${trL("I agreed to the following:", r.lang)}`,
     ...r.terms.map((t,i) => termLine(t,i,r.lang)), ``, r.esign, ``,
     `${trL("Signed electronically by:", r.lang)} ${r.printedName}`, r.shopRep ? `${trL("Shop representative", r.lang)}: ${r.shopRep}` : null
@@ -899,7 +977,7 @@ function emailHtml(r){
   return `<div style="font-family:Arial,sans-serif;max-width:640px;color:#111;line-height:1.45">
 <h2 style="margin:0">${e(r.business.name)}</h2><div style="color:#555">${e(r.business.address)} · ${e(r.business.phone)}</div>
 <p>Hi ${e(r.customer.name)}, here is a copy of the agreement you signed today. Thank you for your business.</p>
-<table style="border-collapse:collapse">${row("Invoice #", r.id)}${row("Signed", r.signedAtLocal)}${row("Services", (r.services||[]).join(", "))}${row("Notes", r.service)}${r.bill ? billLines(r.bill).map(([k,v]) => row(k, "$" + v.toFixed(2))).join("") : ""}${row("Final total paid", "$" + r.amount.toFixed(2) + " · " + r.method + (r.last4 ? " ending " + r.last4 : ""))}${row("Shop representative", r.shopRep)}</table>
+<table style="border-collapse:collapse">${row("Invoice #", r.id)}${row("Signed", r.signedAtLocal)}${row("Services", (r.services||[]).join(", "))}${row("Notes", r.service)}${r.bill ? billLines(r.bill).map(([k,v]) => row(k, money2(v))).join("") : ""}${row("Final total paid", "$" + r.amount.toFixed(2) + " · " + r.method + (r.last4 ? " ending " + r.last4 : ""))}${row("Shop representative", r.shopRep)}</table>
 <h3>What you initialed</h3>
 ${r.terms.map(t => `<div style="border:1px solid #ddd;padding:10px 12px;margin-bottom:8px"><b>${e(t.title)}</b> ${t.initials ? `<span style="float:right">Initials: <b>${e(t.initials)}</b></span>` : ""}<div style="white-space:pre-line;margin-top:6px">${e(t.text)}</div></div>`).join("")}
 <p style="color:#555">${e(r.esign)}</p>
@@ -949,7 +1027,7 @@ $("navRecords").onclick = () => askPin(openRecords);
 $("navSettings").onclick = () => askPin(openSettings);
 
 /* ---------- records ---------- */
-const money = n => "$" + Number(n||0).toFixed(2);
+const money = n => money2(n);
 function fmtShort(iso){ try{ return new Date(iso).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}); }catch{ return iso; } }
 function openRecords(){
   show("screenRecords");
@@ -994,7 +1072,7 @@ function openDetail(r){
   const rows = [
     ["Agreement #", r.id, true], ["Signed", r.signedAtLocal], ["Language", r.lang === "es" ? "Español (Spanish)" : ""], ["Phone", r.customer?.phone], ["Email", r.customer?.email],
     ["Vehicle", [r.vehicle, r.plate].filter(Boolean).join(" · ")], ["Invoice #", r.invoice], ["Services", (r.services||[]).join(", ")], ["Notes", r.service], ["Shop representative", r.shopRep],
-    ...(r.bill ? billLines(r.bill).map(([k,v]) => [k, money(v), true]) : []), ["Final total", money(r.amount), true], ["Payment", r.method + (r.last4 ? " ending " + r.last4 : "")],
+    ...(r.bill ? billLines(r.bill).map(([k,v]) => [k, money(v), true]) : []), [r.bill?.deposit > 0 ? "Charged today" : "Final total", money(r.amount), true], ["Payment", r.method + (r.last4 ? " ending " + r.last4 : "")],
     ["Copy emailed to", r.emailedTo ? `${r.emailedTo} (email opened ${fmtShort(r.emailSentAt || r.emailOfferedAt)})` : "Not sent"],
     ["Device", r.device]
   ];
@@ -1007,6 +1085,11 @@ function openDetail(r){
   const h4 = document.createElement("h3"); h4.textContent = "Signature"; h4.style.fontSize = "22px"; h4.style.textTransform = "uppercase"; body.appendChild(h4);
   const sig = document.createElement("img"); sig.className = "sigimg"; sig.alt = "Customer signature"; sig.src = r.signature; body.appendChild(sig);
   const pn = document.createElement("p"); pn.className = "fine"; pn.textContent = "Printed name: " + r.printedName; body.appendChild(pn);
+  { const h6 = document.createElement("h3"); h6.textContent = "Photo at signing"; h6.style.fontSize = "22px"; h6.style.textTransform = "uppercase"; body.appendChild(h6);
+    if(r.signerPhotoData){
+      const si = document.createElement("img"); si.alt = "Front camera photo taken when the customer tapped Sign & submit"; si.src = r.signerPhotoData; si.style.maxWidth = "360px"; si.style.width = "100%"; si.style.borderRadius = "8px"; body.appendChild(si);
+      const st = document.createElement("p"); st.className = "fine"; st.textContent = "Taken " + new Date(r.signerPhotoAt).toLocaleString("en-US",{dateStyle:"medium",timeStyle:"medium"}) + " as Sign & submit was tapped."; body.appendChild(st);
+    } else { const st = document.createElement("p"); st.className = "fine"; st.textContent = "No photo. The camera was off, blocked, or not allowed."; body.appendChild(st); } }
   const src = photoSrc(r);
   if(src){
     const h5 = document.createElement("h3"); h5.textContent = "Photo"; h5.style.fontSize = "22px"; h5.style.textTransform = "uppercase"; body.appendChild(h5);
@@ -1043,7 +1126,7 @@ ${r.services ? `<tr><td>Services</td><td>${esc(r.services.join(", "))}</td></tr>
 ${r.service ? `<tr><td>Notes</td><td>${esc(r.service)}</td></tr>` : ""}
 ${r.shopRep ? `<tr><td>Shop representative</td><td>${esc(r.shopRep)}</td></tr>` : ""}
 ${r.bill ? billLines(r.bill).map(([k,v]) => `<tr><td>${esc(k)}</td><td>${esc(money(v))}</td></tr>`).join("") : ""}
-<tr><td>Final total paid</td><td><b>${esc(money(r.amount))}</b></td></tr>
+<tr><td>${r.bill?.deposit > 0 ? "Charged today" : "Final total paid"}</td><td><b>${esc(money(r.amount))}</b></td></tr>
 <tr><td>Payment method</td><td>${esc(r.method)}${r.last4 ? " ending " + esc(r.last4) : ""}</td></tr>
 <tr><td>Copy emailed to</td><td>${r.emailedTo ? esc(r.emailedTo) + " (email opened " + esc(r.emailSentAt || r.emailOfferedAt) + ")" : "Not sent"}</td></tr>
 <tr><td>Signing device</td><td><small>${esc(r.device)}</small></td></tr>
@@ -1052,6 +1135,7 @@ ${r.bill ? billLines(r.bill).map(([k,v]) => `<tr><td>${esc(k)}</td><td>${esc(mon
 ${r.terms.map((t,i) => `<div style="border:1px solid #ccc;padding:10px 12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:12px"><b>${esc(/^\d+\./.test(t.title) ? t.title : (i+1) + ". " + t.title)}</b>${t.initials ? `<span style="border:1px solid #333;padding:2px 10px;font-weight:bold">Initials: ${esc(t.initials)}</span>` : "&#9745;"}</div><div style="white-space:pre-line;margin-top:6px">${esc(t.text)}</div></div>`).join("")}
 <p>${esc(r.esign)}</p>
 <h3>Customer signature</h3><img class="sig" src="${r.signature}" alt="signature"><p>Printed name: ${esc(r.printedName)}</p>
+${r.signerPhotoData ? `<h3>Photo at signing</h3><img src="${r.signerPhotoData}" alt="Customer photo at signing" style="max-width:360px;width:100%;border:1px solid #999"><p>Taken ${esc(new Date(r.signerPhotoAt).toLocaleString("en-US",{dateStyle:"full",timeStyle:"long"}))} by the tablet's front camera as the customer tapped Sign &amp; submit.</p>` : ""}
 ${photo ? `<h3>Photo taken at signing</h3><img src="${photo}" style="max-width:100%" alt="photo">` : ""}
 <p style="margin-top:30px;font-size:12px;color:#666">Agreement text version ${esc(r.agreementVersion)}. Record created electronically at time of signing.</p>
 </body></html>`;
@@ -1177,9 +1261,9 @@ $("backupBtn").onclick = async () => {
 $("csvBtn").onclick = async () => {
   if(!db) return;
   const q = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
-  const head = ["Invoice #","Signed","Customer","Phone","Email","Services","Notes","Tires","FL tire fee","Disposal","Service","Sales tax","Card fee","Final total","Payment","Card last 4","Emailed to"];
+  const head = ["Invoice #","Signed","Customer","Phone","Email","Services","Notes","Tires","FL tire fee","Disposal","Service","Sales tax","Deposit","Card fee","Final total","Payment","Card last 4","Emailed to"];
   const rows = (await allAgreements()).map(r => [r.id, r.signedAtLocal, r.customer?.name, r.customer?.phone, r.customer?.email, (r.services||[]).join("; "), r.service,
-    r.bill?.tires, r.bill?.flFee ?? 0, r.bill?.disposeFee ?? 0, r.bill?.service, r.bill?.tax, r.bill?.fee, r.amount, r.method, r.last4, r.emailedTo].map(q).join(","));
+    r.bill?.tires, r.bill?.flFee ?? 0, r.bill?.disposeFee ?? 0, r.bill?.service, r.bill?.tax, r.bill?.deposit ?? 0, r.bill?.fee, r.amount, r.method, r.last4, r.emailedTo].map(q).join(","));
   await downloads.save({ filename: `TireSpot-SignOff-records-${stamp()}.csv`, data: [head.map(q).join(","), ...rows].join("\r\n") });
   toast("Spreadsheet saved to Downloads.");
 };
