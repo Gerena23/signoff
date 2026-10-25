@@ -1,5 +1,5 @@
 // Tire Spot Sign-Off: offline support. Bump VERSION when you upload new files.
-const VERSION = "signoff-v12";
+const VERSION = "signoff-v13";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -13,7 +13,7 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   // Pages: try the network first so updates show up, fall back to the saved copy offline.
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put("index.html", copy)); return res; })
+    e.respondWith(fetch(req, { cache: "no-store" }).then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put("index.html", copy)); return res; })
       .catch(() => caches.match("index.html")));
     return;
   }
